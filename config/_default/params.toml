@@ -7,17 +7,6 @@ favicon = "/favicon.png"
 defaultContentLanguage = "zh-cn"
 hasCJKLanguage = true
 
-[languages]
-    [languages.zh-cn]
-        languageName = "中文"
-        title = "望的博客"
-        weight = 1
-
-    [languages.en]
-        languageName = "English"
-        title = "Unknown's Blog"
-        weight = 2
-
 [sidebar]
     emoji = ""
     subtitle = "偏我去时花满楼，偏我来时不逢春。"

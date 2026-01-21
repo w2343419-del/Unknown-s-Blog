@@ -1,3 +1,301 @@
 /*
-    You can add your own custom styles here.
+    Custom Styles - Professional & Subtle Animations
 */
+
+/* ===== CSS 变量 ===== */
+:root {
+    --transition-fast: 0.15s;
+    --transition-normal: 0.25s;
+    --transition-slow: 0.4s;
+    --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+    --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+/* ===== 平滑滚动 ===== */
+html {
+    scroll-behavior: smooth;
+}
+
+/* ===== 页面过渡 ===== */
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* 主内容区 - 柔和进入 */
+.main-container {
+    animation: slideUp 0.4s var(--ease-smooth) forwards;
+}
+
+/* ===== 文章卡片 ===== */
+.article-list article {
+    transition: transform var(--transition-normal) var(--ease-smooth),
+                box-shadow var(--transition-normal) var(--ease-smooth);
+    will-change: transform;
+    
+    &:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-lg);
+    }
+}
+
+/* 文章卡片图片 */
+.article-list article .article-image img {
+    transition: transform var(--transition-slow) var(--ease-smooth);
+}
+
+.article-list article:hover .article-image img {
+    transform: scale(1.03);
+}
+
+/* ===== 左侧边栏 ===== */
+
+/* 头像 - 优雅缩放 */
+.site-avatar {
+    transition: transform var(--transition-normal) var(--ease-bounce),
+                box-shadow var(--transition-normal) var(--ease-smooth);
+    
+    &:hover {
+        transform: scale(1.05);
+        box-shadow: var(--shadow-md);
+    }
+    
+    img {
+        transition: filter var(--transition-normal) var(--ease-smooth);
+    }
+    
+    &:hover img {
+        filter: brightness(1.05);
+    }
+}
+
+/* 菜单项 - 精致悬停 */
+.menu li {
+    position: relative;
+    transition: color var(--transition-fast) var(--ease-smooth);
+    
+    a {
+        transition: color var(--transition-fast) var(--ease-smooth),
+                    background var(--transition-fast) var(--ease-smooth);
+    }
+    
+    &::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%) scaleY(0);
+        width: 3px;
+        height: 60%;
+        background: var(--accent-color);
+        border-radius: 2px;
+        transition: transform var(--transition-fast) var(--ease-bounce);
+    }
+    
+    &:hover::before {
+        transform: translateY(-50%) scaleY(1);
+    }
+    
+    &:hover a {
+        color: var(--accent-color);
+    }
+}
+
+/* 社交图标 - 柔和弹跳 */
+.menu-social li a {
+    display: inline-flex;
+    transition: transform var(--transition-fast) var(--ease-bounce),
+                color var(--transition-fast) var(--ease-smooth);
+    
+    &:hover {
+        transform: translateY(-3px);
+        color: var(--accent-color);
+    }
+    
+    svg {
+        transition: transform var(--transition-fast) var(--ease-smooth);
+    }
+    
+    &:hover svg {
+        transform: scale(1.1);
+    }
+}
+
+/* ===== 右侧小部件 ===== */
+.widget {
+    transition: box-shadow var(--transition-normal) var(--ease-smooth);
+    
+    &:hover {
+        box-shadow: var(--shadow-md);
+    }
+}
+
+/* 目录悬停效果 */
+#TableOfContents {
+    a {
+        position: relative;
+        transition: color var(--transition-fast) var(--ease-smooth),
+                    padding-left var(--transition-fast) var(--ease-smooth);
+        
+        &:hover {
+            color: var(--accent-color);
+            padding-left: 4px;
+        }
+        
+        &.active {
+            color: var(--accent-color);
+            font-weight: 500;
+        }
+    }
+}
+
+/* 标签云 - 轻微缩放 */
+.tagCloud .tagCloud-tags a {
+    transition: transform var(--transition-fast) var(--ease-bounce),
+                background var(--transition-fast) var(--ease-smooth),
+                color var(--transition-fast) var(--ease-smooth);
+    
+    &:hover {
+        transform: scale(1.05);
+        background: var(--accent-color);
+        color: #fff;
+    }
+}
+
+/* 分类列表 */
+.categories-list li {
+    transition: transform var(--transition-fast) var(--ease-smooth);
+    
+    &:hover {
+        transform: translateX(4px);
+    }
+    
+    a {
+        transition: color var(--transition-fast) var(--ease-smooth);
+        
+        &:hover {
+            color: var(--accent-color);
+        }
+    }
+}
+
+/* ===== 搜索框 ===== */
+.search-form input {
+    transition: box-shadow var(--transition-normal) var(--ease-smooth),
+                border-color var(--transition-normal) var(--ease-smooth);
+    
+    &:focus {
+        box-shadow: 0 0 0 3px rgba(var(--accent-color-rgb), 0.15);
+        border-color: var(--accent-color);
+    }
+}
+
+/* ===== 文章内容 ===== */
+
+/* 链接下划线动画 */
+.article-content a:not(.gallery-image) {
+    position: relative;
+    color: var(--accent-color);
+    text-decoration: none;
+    
+    &::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: -1px;
+        width: 100%;
+        height: 1px;
+        background: currentColor;
+        transform: scaleX(0);
+        transform-origin: right;
+        transition: transform var(--transition-normal) var(--ease-smooth);
+    }
+    
+    &:hover::after {
+        transform: scaleX(1);
+        transform-origin: left;
+    }
+}
+
+/* 代码块 */
+.article-content pre {
+    transition: box-shadow var(--transition-normal) var(--ease-smooth);
+    
+    &:hover {
+        box-shadow: var(--shadow-md);
+    }
+}
+
+/* 图片悬停 */
+.article-content img {
+    transition: transform var(--transition-normal) var(--ease-smooth),
+                box-shadow var(--transition-normal) var(--ease-smooth);
+    
+    &:hover {
+        box-shadow: var(--shadow-lg);
+    }
+}
+
+/* ===== 按钮 ===== */
+button, .btn, .pagination a {
+    transition: transform var(--transition-fast) var(--ease-smooth),
+                background var(--transition-fast) var(--ease-smooth),
+                box-shadow var(--transition-fast) var(--ease-smooth);
+    
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-sm);
+    }
+    
+    &:active {
+        transform: translateY(0);
+    }
+}
+
+/* ===== 暗色模式过渡 ===== */
+[data-scheme] {
+    transition: background-color var(--transition-slow) var(--ease-smooth),
+                color var(--transition-normal) var(--ease-smooth);
+}
+
+/* 暗色模式切换按钮 */
+.dark-mode-toggle {
+    transition: transform var(--transition-fast) var(--ease-bounce);
+    
+    &:hover {
+        transform: rotate(15deg);
+    }
+}
+
+/* ===== 返回顶部按钮 ===== */
+.back-to-top {
+    transition: opacity var(--transition-normal) var(--ease-smooth),
+                transform var(--transition-normal) var(--ease-bounce);
+    
+    &:hover {
+        transform: translateY(-3px);
+    }
+}
+
+/* ===== 减少动画模式支持 ===== */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}

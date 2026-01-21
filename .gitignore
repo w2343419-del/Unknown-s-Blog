@@ -1,0 +1,19 @@
+# Hugo 生成文件
+public/
+resources/
+.hugo_build.lock
+
+# 临时文件
+temp.html
+temp2.html
+temp_output.html
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo

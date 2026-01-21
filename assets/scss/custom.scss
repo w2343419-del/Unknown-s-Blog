@@ -1,0 +1,801 @@
+/*
+    Custom Styles - Enhanced Animations for Hugo Theme Stack
+*/
+
+/* ===== CSS 变量 ===== */
+:root {
+    --anim-fast: 0.18s;
+    --anim-normal: 0.3s;
+    --anim-slow: 0.5s;
+    --ease-out: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ===== 动态蓝白渐变背景 ===== */
+@keyframes gradientWave {
+    0%, 100% {
+        background-position: 0% 50%;
+        background-size: 200% 200%;
+    }
+    25% {
+        background-position: 50% 0%;
+        background-size: 220% 220%;
+    }
+    50% {
+        background-position: 100% 50%;
+        background-size: 200% 200%;
+    }
+    75% {
+        background-position: 50% 100%;
+        background-size: 180% 180%;
+    }
+}
+
+body {
+    background: linear-gradient(-45deg, 
+        #dbeafe 0%, 
+        #e0f2fe 20%, 
+        #ffffff 40%, 
+        #bfdbfe 60%, 
+        #f0f9ff 80%, 
+        #dbeafe 100%);
+    background-size: 200% 200%;
+    animation: gradientWave 20s ease-in-out infinite;
+}
+
+/* 暗色模式动态渐变 */
+[data-scheme="dark"] body {
+    background: linear-gradient(-45deg, 
+        #1e3a5f 0%, 
+        #0f172a 20%, 
+        #1a365d 40%, 
+        #1e40af 60%, 
+        #0c1929 80%, 
+        #1e3a5f 100%);
+    background-size: 200% 200%;
+    animation: gradientWave 20s ease-in-out infinite;
+}
+
+/* ===== 平滑滚动 ===== */
+html {
+    scroll-behavior: smooth;
+}
+
+/* ===== 关键帧动画 ===== */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+@keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+@keyframes bounceIn {
+    0% { transform: scale(0.9); opacity: 0; }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+/* 主内容区进入动画 */
+.main-container {
+    animation: fadeInUp 0.6s var(--ease-out) forwards;
+}
+
+/* ===== 左侧边栏 ===== */
+
+/* 站点名称 */
+.left-sidebar .site-name {
+    transition: color var(--anim-fast) var(--ease-smooth);
+    
+    &:hover {
+        color: var(--accent-color);
+    }
+}
+
+/* ===== 主菜单动画 ===== */
+#main-menu > li:not(.menu-bottom-section) {
+    > a {
+        display: flex;
+        align-items: center;
+        position: relative;
+        cursor: pointer;
+        transition: all var(--anim-normal) var(--ease-smooth);
+        
+        /* 左侧指示条 */
+        &::before {
+            content: '';
+            position: absolute;
+            left: -10px;
+            top: 50%;
+            transform: translateY(-50%) scaleY(0);
+            width: 3px;
+            height: 100%;
+            background: var(--accent-color);
+            border-radius: 2px;
+            transition: transform var(--anim-fast) var(--ease-out);
+        }
+        
+        svg {
+            transition: all var(--anim-normal) var(--ease-smooth);
+        }
+        
+        span {
+            transition: all var(--anim-normal) var(--ease-smooth);
+        }
+    }
+    
+    &:hover > a {
+        color: var(--accent-color);
+        
+        &::before {
+            transform: translateY(-50%) scaleY(1);
+        }
+        
+        svg {
+            color: var(--accent-color);
+            transform: scale(1.1);
+        }
+    }
+    
+    /* 当前激活项 */
+    &.current > a {
+        color: var(--accent-color);
+        font-weight: 600;
+        
+        &::before {
+            transform: translateY(-50%) scaleY(1);
+        }
+        
+        svg {
+            color: var(--accent-color);
+        }
+    }
+}
+
+/* 暗色模式切换 */
+#dark-mode-toggle {
+    transition: all var(--anim-normal) var(--ease-smooth);
+    cursor: pointer;
+    
+    svg {
+        transition: all var(--anim-normal) var(--ease-smooth);
+    }
+    
+    &:hover {
+        color: var(--accent-color);
+        
+        svg {
+            transform: rotate(180deg);
+            color: var(--accent-color);
+        }
+    }
+}
+
+/* ===== 语言切换 - 和暗色模式一样的样式 ===== */
+#lang-switch {
+    display: flex;
+    align-items: center;
+    gap: var(--menu-icon-separation);
+    color: var(--body-text-color);
+    cursor: pointer;
+    transition: all var(--anim-normal) var(--ease-smooth);
+    
+    svg {
+        width: 24px;
+        height: 24px;
+        stroke-width: 1.33;
+        transition: all var(--anim-normal) var(--ease-smooth);
+    }
+    
+    .lang-link {
+        text-decoration: none;
+        color: inherit;
+        font-size: 1.4rem;
+        transition: all var(--anim-normal) var(--ease-smooth);
+    }
+    
+    &:hover {
+        color: var(--accent-color);
+        
+        svg {
+            transform: rotate(15deg) scale(1.1);
+            color: var(--accent-color);
+        }
+        
+        .lang-link {
+            color: var(--accent-color);
+        }
+    }
+}
+
+/* 兼容旧版下拉框样式（如果存在） */
+#i18n-switch, #lang-switch-buttons {
+    display: none;
+}
+
+/* ===== 页面切换过渡动画 ===== */
+@keyframes fadeSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes contentFadeIn {
+    from {
+        opacity: 0;
+        transform: translateX(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* 语言切换时的内容区过渡 */
+main {
+    animation: fadeSlideIn 0.5s var(--ease-out) forwards;
+}
+
+/* 侧边栏在语言切换时的过渡 */
+.left-sidebar {
+    animation: contentFadeIn 0.4s var(--ease-out) forwards;
+}
+
+.right-sidebar {
+    animation: contentFadeIn 0.4s var(--ease-out) 0.1s forwards;
+}
+
+/* ===== 社交图标 ===== */
+.menu-social li a,
+ol.menu-social li a {
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    transition: transform var(--anim-fast) var(--ease-out),
+                color var(--anim-fast) var(--ease-smooth),
+                filter var(--anim-fast) var(--ease-smooth);
+    
+    &:hover {
+        transform: translateY(-5px) scale(1.1);
+        color: var(--accent-color);
+        filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+    }
+}
+
+/* ===== 文章列表 ===== */
+.article-list article {
+    transition: transform var(--anim-normal) var(--ease-out),
+                box-shadow var(--anim-normal) var(--ease-smooth);
+    
+    &:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* 文章图片 */
+    .article-image {
+        overflow: hidden;
+        
+        img {
+            transition: transform var(--anim-slow) var(--ease-out);
+        }
+    }
+    
+    &:hover .article-image img {
+        transform: scale(1.08);
+    }
+    
+    /* 文章标题 */
+    .article-title {
+        transition: color var(--anim-fast) var(--ease-smooth);
+        
+        a {
+            transition: color var(--anim-fast) var(--ease-smooth);
+        }
+    }
+    
+    &:hover .article-title,
+    &:hover .article-title a {
+        color: var(--accent-color);
+    }
+}
+
+/* 文章列表交错进入动画 */
+.article-list article {
+    animation: fadeInUp var(--anim-slow) var(--ease-out) backwards;
+    
+    &:nth-child(1) { animation-delay: 0.05s; }
+    &:nth-child(2) { animation-delay: 0.1s; }
+    &:nth-child(3) { animation-delay: 0.15s; }
+    &:nth-child(4) { animation-delay: 0.2s; }
+    &:nth-child(5) { animation-delay: 0.25s; }
+    &:nth-child(6) { animation-delay: 0.3s; }
+}
+
+/* ===== 文章详情页 ===== */
+.article-page .main-article {
+    animation: fadeInUp 0.5s var(--ease-out) forwards;
+    
+    /* 文章标题 */
+    .article-title {
+        animation: fadeInUp 0.6s var(--ease-out) 0.1s backwards;
+    }
+    
+    /* 分类标签动画 */
+    .article-category a,
+    .article-tags a {
+        transition: transform var(--anim-fast) var(--ease-bounce),
+                    background-color var(--anim-fast) var(--ease-smooth),
+                    box-shadow var(--anim-fast) var(--ease-smooth);
+        
+        &:hover {
+            transform: translateY(-3px) scale(1.05);
+            background-color: var(--accent-color-darker);
+            box-shadow: 0 5px 15px rgba(52, 73, 94, 0.3);
+        }
+        
+        &:active {
+            transform: translateY(-1px) scale(1);
+        }
+    }
+}
+
+/* ===== 右侧小部件 ===== */
+.right-sidebar .widget {
+    /* 整体不上移，只有内部选项上移 */
+}
+
+/* 归档年份整体跳动 */
+.widget.archives .archives-year {
+    transition: transform var(--anim-fast) var(--ease-out),
+                box-shadow var(--anim-fast) var(--ease-smooth);
+    
+    &:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        
+        a {
+            color: var(--accent-color);
+            
+            .year, .count {
+                color: var(--accent-color);
+            }
+        }
+    }
+    
+    a {
+        transition: color var(--anim-fast) var(--ease-smooth);
+    }
+}
+
+/* 小部件交错进入 */
+.right-sidebar .widget {
+    animation: fadeInUp var(--anim-slow) var(--ease-out) backwards;
+    
+    &:nth-child(1) { animation-delay: 0.1s; }
+    &:nth-child(2) { animation-delay: 0.18s; }
+    &:nth-child(3) { animation-delay: 0.26s; }
+    &:nth-child(4) { animation-delay: 0.34s; }
+}
+
+/* 搜索小部件 - 默认隐藏 */
+.right-sidebar .widget.search-form {
+    display: none !important;
+}
+
+/* 搜索页面时显示搜索小部件 */
+body.template-search .right-sidebar .widget.search-form {
+    display: flex !important;
+    animation: searchSlideIn 0.5s var(--ease-out) backwards;
+    animation-delay: 0.1s;
+}
+
+@keyframes searchSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* 搜索框美化 */
+.search-form.widget {
+    input {
+        border-radius: var(--card-border-radius);
+        transition: all var(--anim-normal) var(--ease-smooth);
+        
+        &:focus {
+            box-shadow: var(--shadow-l2), 0 0 0 3px rgba(52, 73, 94, 0.1);
+            transform: translateY(-2px);
+        }
+    }
+    
+    button {
+        transition: all var(--anim-normal) var(--ease-smooth);
+        
+        &:hover {
+            color: var(--accent-color);
+            transform: scale(1.1);
+        }
+    }
+}
+
+/* 主搜索表单动画 */
+body.template-search main .search-form {
+    animation: searchFormSlideIn 0.6s var(--ease-out) backwards;
+}
+
+@keyframes searchFormSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 搜索结果动画 */
+body.template-search .search-result {
+    animation: fadeInUp 0.5s var(--ease-out) 0.2s backwards;
+}
+
+/* 标签云 */
+.tagCloud .tagCloud-tags a {
+    display: inline-block;
+    cursor: pointer;
+    transition: transform var(--anim-fast) var(--ease-out),
+                color var(--anim-fast) var(--ease-smooth),
+                text-shadow var(--anim-fast) var(--ease-smooth);
+    
+    &:hover {
+        transform: translateY(-4px);
+        color: var(--accent-color);
+        text-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+}
+
+/* 目录 */
+#TableOfContents {
+    li {
+        transition: transform var(--anim-fast) var(--ease-smooth);
+        
+        &:hover {
+            transform: translateX(6px);
+        }
+    }
+    
+    a {
+        transition: color var(--anim-fast) var(--ease-smooth),
+                    padding-left var(--anim-fast) var(--ease-smooth);
+        
+        &:hover, &.active {
+            color: var(--accent-color);
+            padding-left: 8px;
+        }
+    }
+}
+
+/* ===== 搜索 ===== */
+.search-form {
+    input {
+        transition: all var(--anim-normal) var(--ease-smooth);
+        
+        &:focus {
+            box-shadow: 0 0 0 4px rgba(52, 73, 94, 0.2);
+            border-color: var(--accent-color);
+            transform: scale(1.02);
+        }
+    }
+}
+
+/* ===== 文章内容 ===== */
+
+/* 链接悬停下划线 */
+.article-content a:not(.gallery-image):not(.headerlink) {
+    position: relative;
+    color: var(--accent-color);
+    text-decoration: none;
+    
+    &::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: -2px;
+        width: 100%;
+        height: 2px;
+        background: linear-gradient(90deg, var(--accent-color), var(--accent-color-darker));
+        transform: scaleX(0);
+        transform-origin: right;
+        transition: transform var(--anim-normal) var(--ease-out);
+    }
+    
+    &:hover::after {
+        transform: scaleX(1);
+        transform-origin: left;
+    }
+}
+
+/* 代码块 */
+.article-content pre {
+    transition: box-shadow var(--anim-normal) var(--ease-smooth),
+                transform var(--anim-normal) var(--ease-smooth);
+    
+    &:hover {
+        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.18);
+        transform: translateY(-2px);
+    }
+}
+
+/* 图片 */
+.article-content img {
+    transition: transform var(--anim-normal) var(--ease-out),
+                box-shadow var(--anim-normal) var(--ease-smooth);
+    
+    &:hover {
+        transform: scale(1.02);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+    }
+}
+
+/* 图片画廊 */
+.article-content .gallery-image {
+    transition: transform var(--anim-normal) var(--ease-bounce),
+                box-shadow var(--anim-normal) var(--ease-smooth);
+    
+    &:hover {
+        transform: scale(1.05);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+    }
+}
+
+/* ===== 分页 ===== */
+.pagination {
+    .page-link {
+        transition: all var(--anim-fast) var(--ease-bounce);
+        
+        &:hover {
+            transform: translateY(-3px) scale(1.05);
+            background-color: var(--accent-color);
+            color: #fff;
+            box-shadow: 0 5px 15px rgba(52, 73, 94, 0.3);
+        }
+        
+        &:active {
+            transform: translateY(-1px) scale(1);
+        }
+    }
+}
+
+/* ===== 返回顶部 ===== */
+.back-to-top {
+    transition: transform var(--anim-fast) var(--ease-bounce),
+                opacity var(--anim-normal) var(--ease-smooth),
+                box-shadow var(--anim-fast) var(--ease-smooth);
+    
+    &:hover {
+        transform: translateY(-5px) scale(1.1);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+}
+
+/* ===== 暗色模式过渡 ===== */
+[data-scheme] {
+    transition: background-color var(--anim-slow) var(--ease-smooth),
+                color var(--anim-normal) var(--ease-smooth);
+}
+
+/* ===== 按钮通用效果 ===== */
+button, .btn {
+    transition: all var(--anim-fast) var(--ease-bounce);
+    
+    &:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+    }
+    
+    &:active {
+        transform: translateY(-1px);
+    }
+}
+
+/* ===== 卡片通用效果 ===== */
+.card-link {
+    transition: transform var(--anim-normal) var(--ease-out),
+                box-shadow var(--anim-normal) var(--ease-smooth);
+    
+    &:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+    }
+}
+
+/* ===== 页脚 ===== */
+footer.site-footer {
+    a {
+        transition: color var(--anim-fast) var(--ease-smooth);
+        
+        &:hover {
+            color: var(--accent-color);
+        }
+    }
+}
+
+/* ===== 友情链接卡片 ===== */
+.link-grid .card {
+    transition: transform var(--anim-normal) var(--ease-bounce),
+                box-shadow var(--anim-normal) var(--ease-smooth);
+    
+    &:hover {
+        transform: translateY(-8px) scale(1.02);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+    }
+    
+    img {
+        transition: transform var(--anim-normal) var(--ease-smooth);
+    }
+    
+    &:hover img {
+        transform: rotate(10deg) scale(1.1);
+    }
+}
+
+/* ===== 归档页时间线 ===== */
+.archives-group {
+    .archive-year {
+        transition: color var(--anim-fast) var(--ease-smooth);
+        
+        &:hover {
+            color: var(--accent-color);
+        }
+    }
+    
+    article {
+        position: relative;
+        transition: background-color var(--anim-fast) var(--ease-smooth);
+        
+        /* 左侧指示条 */
+        &::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: var(--accent-color);
+            border-radius: 2px;
+            transform: scaleY(0);
+            transition: transform var(--anim-fast) var(--ease-out);
+        }
+        
+        &:hover {
+            background-color: rgba(52, 73, 94, 0.03);
+            
+            &::before {
+                transform: scaleY(1);
+            }
+        }
+        
+        .article-title {
+            transition: color var(--anim-fast) var(--ease-smooth);
+        }
+        
+        &:hover .article-title {
+            color: var(--accent-color);
+        }
+    }
+}
+
+/* ===== 搜索结果 ===== */
+.search-result--list article {
+    transition: transform var(--anim-fast) var(--ease-smooth),
+                box-shadow var(--anim-fast) var(--ease-smooth);
+    
+    &:hover {
+        transform: translateX(8px);
+        box-shadow: -4px 0 0 var(--accent-color);
+    }
+}
+
+/* ===== 页脚统计 - 固定在底部 ===== */
+.site-stats-fixed {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 8px 15px;
+    background: transparent;
+    font-size: 1.2rem;
+    color: var(--body-text-color);
+    
+    .stat-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        
+        svg {
+            width: 14px;
+            height: 14px;
+            opacity: 0.6;
+        }
+    }
+    
+    .stat-value {
+        font-weight: 600;
+        color: var(--accent-color);
+        margin: 0 2px;
+    }
+    
+    .dev-notice {
+        font-size: 1.2rem;
+        opacity: 0.7;
+    }
+}
+
+/* 暗色模式固定统计栏 */
+[data-scheme="dark"] .site-stats-fixed {
+    background: transparent;
+}
+
+/* 给页面底部留出空间，防止内容被遮挡 */
+body {
+    padding-bottom: 40px;
+}
+
+/* 页脚原有样式 */
+footer.site-footer {
+    text-align: center;
+}
+
+/* ===== 文章阅读次数 ===== */
+.article-views {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    
+    svg {
+        width: 16px;
+        height: 16px;
+    }
+}
+
+/* ===== 减少动画模式 ===== */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
