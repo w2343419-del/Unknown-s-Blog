@@ -1,7 +1,7 @@
 # Change baseurl before deploy
 baseurl = "https://w2343419-del.github.io/WangScape/"
 languageCode = "en-us"
-title = "望的博客"
+title = "WangScape"
 
 defaultContentLanguage = "zh-cn"
 
@@ -16,7 +16,7 @@ pagerSize = 5
   languageName = "中文"
   weight = 1
   contentDir = "content/zh-cn"
-  title = "望的博客"
+  title = "望境"
 
     [languages."zh-cn".params]
     description = "偏我去时花满楼，偏我来时不逢春。"
@@ -28,7 +28,7 @@ pagerSize = 5
   languageName = "English"
   weight = 2
   contentDir = "content/en"
-  title = "Wang's Blog"
+  title = "WangScape"
 
     [languages.en.params]
     description = "Waiting for flowers when leaving, arriving when spring is gone."
