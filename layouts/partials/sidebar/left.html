@@ -9,21 +9,26 @@
         {{ with .Site.Params.sidebar.avatar }}
             {{ if (default true .enabled) }}
             <figure class="site-avatar">
-                <a href="{{ .Site.BaseURL | relLangURL }}">
+                {{- $avatarSrc := "" -}}
                 {{ if not .local }}
-                    <img src="{{ .src }}" width="300" height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    {{- $avatarSrc = .src -}}
+                    <a href="javascript:void(0)" class="avatar-link" data-avatar="{{ .src }}">
+                        <img src="{{ .src }}" width="300" height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    </a>
                 {{ else }}
                     {{ $avatar := resources.Get (.src) }}
                     
                     {{ if $avatar }}
                         {{ $avatarResized := $avatar.Resize "300x" }}
-                        <img src="{{ $avatarResized.RelPermalink }}" width="{{ $avatarResized.Width }}"
-                            height="{{ $avatarResized.Height }}" class="site-logo" loading="lazy" alt="Avatar">
+                        {{- $avatarSrc = $avatar.RelPermalink -}}
+                        <a href="javascript:void(0)" class="avatar-link" data-avatar="{{ $avatar.RelPermalink }}">
+                            <img src="{{ $avatarResized.RelPermalink }}" width="{{ $avatarResized.Width }}"
+                                height="{{ $avatarResized.Height }}" class="site-logo" loading="lazy" alt="Avatar">
+                        </a>
                     {{ else }}
                         {{ errorf "Failed loading avatar from %q" . }}
                     {{ end }}
                 {{ end }}
-                </a>
                 {{ with $.Site.Params.sidebar.emoji }}
                     <span class="emoji">{{ . }}</span>
                 {{ end }}
@@ -102,3 +107,44 @@
         </li>
     </ol>
 </aside>
+
+<!-- 头像弹出层 -->
+<div id="avatar-modal" class="avatar-modal">
+    <div class="avatar-modal-overlay"></div>
+    <div class="avatar-modal-content">
+        <img src="" alt="Avatar" class="avatar-modal-img">
+    </div>
+</div>
+
+<script>
+(function() {
+    const avatarLink = document.querySelector('.avatar-link');
+    const modal = document.getElementById('avatar-modal');
+    const modalImg = modal.querySelector('.avatar-modal-img');
+    const overlay = modal.querySelector('.avatar-modal-overlay');
+    
+    if (avatarLink && modal) {
+        avatarLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            const avatarSrc = this.getAttribute('data-avatar');
+            modalImg.src = avatarSrc;
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+        
+        function closeModal() {
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+        
+        overlay.addEventListener('click', closeModal);
+        modal.querySelector('.avatar-modal-content').addEventListener('click', closeModal);
+        
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && modal.classList.contains('active')) {
+                closeModal();
+            }
+        });
+    }
+})();
+</script>

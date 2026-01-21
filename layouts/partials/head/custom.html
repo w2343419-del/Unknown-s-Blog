@@ -1,2 +1,21 @@
 <!-- Umami 统计 -->
 <script defer src="https://unknown-qzthzzic4-w2343419-dels-projects.vercel.app/script.js" data-website-id="aee9b0a3-00c8-4037-8b99-e6bb4c336cb9"></script>
+
+<!-- 点击文章卡片进入阅读 -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.article-list article').forEach(function(article) {
+        article.addEventListener('click', function(e) {
+            // 如果点击的是链接，不处理
+            if (e.target.tagName === 'A' || e.target.closest('a')) {
+                return;
+            }
+            // 找到文章标题链接并跳转
+            const link = article.querySelector('.article-title a');
+            if (link) {
+                window.location.href = link.href;
+            }
+        });
+    });
+});
+</script>
