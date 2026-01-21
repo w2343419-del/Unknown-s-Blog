@@ -1,0 +1,39 @@
+{{- $scope := default "homepage" .Scope -}}
+{{- $context := .Context -}}
+{{- $ThemeVersion := "3.33.0" -}}
+{{- with (index .Context.Site.Params.widgets $scope) -}}
+    <aside class="sidebar right-sidebar sticky">
+        {{ range $widget := . }}
+            {{ if templates.Exists (printf "partials/widget/%s.html" .type) }}
+                {{- $params := default dict .params -}}
+                {{ partial (printf "widget/%s" .type) (dict "Context" $context "Params" $params) }}
+            {{ else }}
+                {{ warnf "Widget %s not found" .type }}
+            {{ end }}
+        {{ end }}
+        
+        {{/* 页脚信息放在右侧栏底部 */}}
+        <section class="widget sidebar-footer">
+            <div class="copyright">
+                &copy; 
+                {{ if and ($context.Site.Params.footer.since) (ne $context.Site.Params.footer.since (int (now.Format "2006"))) }}
+                    {{ $context.Site.Params.footer.since }} - 
+                {{ end }}
+                {{ now.Format "2006" }} {{ default $context.Site.Title $context.Site.Copyright }}
+            </div>
+
+            <div class="powerby">
+                {{ with $context.Site.Params.footer.customText }}
+                    {{ . | safeHTML }} <br/>
+                {{ end }}
+
+                {{- $Generator := `<a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a>` -}}
+                {{- $Theme := printf `<b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="%s">Stack</a></b>` $ThemeVersion -}}
+                {{- $DesignedBy := `<a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>` -}}
+
+                {{ T "footer.builtWith" (dict "Generator" $Generator) | safeHTML }} <br />
+                {{ T "footer.designedBy" (dict "Theme" $Theme "DesignedBy" $DesignedBy) | safeHTML }}
+            </div>
+        </section>
+    </aside>
+{{ end }}

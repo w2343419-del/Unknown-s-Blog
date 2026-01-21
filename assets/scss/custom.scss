@@ -98,6 +98,20 @@ html {
 /* 主内容区进入动画 */
 .main-container {
     animation: fadeInUp 0.6s var(--ease-out) forwards;
+    padding: 0 !important;
+    gap: 0;
+}
+
+/* 容器全宽 */
+.container {
+    max-width: 100% !important;
+    padding: 0;
+    margin: 0;
+}
+
+.container.extended,
+.container.compact {
+    max-width: 100% !important;
 }
 
 /* ===== 左侧边栏 ===== */
@@ -260,9 +274,23 @@ main {
     animation: fadeSlideIn 0.5s var(--ease-out) forwards;
 }
 
-/* 侧边栏在语言切换时的过渡 */
+/* ===== 左侧栏固定定位 ===== */
 .left-sidebar {
     animation: contentFadeIn 0.4s var(--ease-out) forwards;
+    
+    @media (min-width: 768px) {
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        overflow-y: auto;
+        
+        /* 隐藏滚动条但保持可滚动（如果内容超出） */
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        &::-webkit-scrollbar {
+            display: none;
+        }
+    }
 }
 
 .right-sidebar {
@@ -789,6 +817,57 @@ footer.site-footer {
         width: 16px;
         height: 16px;
     }
+}
+
+/* ===== 右侧栏页脚样式 ===== */
+.sidebar-footer {
+    margin-top: auto;
+    padding: 20px 15px;
+    text-align: center;
+    font-size: 1.3rem;
+    color: var(--card-text-color-secondary);
+    border-top: 1px solid var(--body-background);
+    background: transparent;
+    
+    .copyright {
+        margin-bottom: 10px;
+        font-weight: 500;
+    }
+    
+    .powerby {
+        line-height: 1.8;
+        opacity: 0.8;
+        
+        a {
+            color: var(--accent-color);
+            text-decoration: none;
+            transition: opacity var(--anim-fast) var(--ease-smooth);
+            
+            &:hover {
+                opacity: 0.7;
+            }
+        }
+    }
+}
+
+/* 确保右侧栏使用 flex 布局让页脚在底部 */
+.right-sidebar {
+    display: flex;
+    flex-direction: column;
+    
+    .sidebar-footer {
+        margin-top: auto;
+    }
+}
+
+/* 隐藏原有页脚 */
+footer.site-footer {
+    display: none;
+}
+
+/* 移除底部 padding，因为页脚已移到右侧栏 */
+body {
+    padding-bottom: 0;
 }
 
 /* ===== 减少动画模式 ===== */
