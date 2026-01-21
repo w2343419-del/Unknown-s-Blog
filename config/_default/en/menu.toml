@@ -51,3 +51,5 @@
     name = "E-mail"
     url = "mailto:w2343419@gmail.com"
     weight = 3
+    [social.params]
+        icon = "mail"
