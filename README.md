@@ -117,3 +117,12 @@ MIT License
 - 主题/布局调试：
   - 修改 `layouts/` 或 `theme/` 下的模板文件后，刷新页面即可看到效果。
   - 可用浏览器开发者工具（F12）检查样式和 DOM 结构。
+
+## 🌐 切换为英文版 README
+
+如需英文说明，请查看或重命名 `README.en.md` 文件：
+
+- 直接浏览：`README.en.md`
+- 或将其重命名为 `README.md` 以在 GitHub 默认显示英文版
+
+---
