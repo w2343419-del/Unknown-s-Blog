@@ -1,1 +1,10 @@
-identifier = "home"
+[[main]]
+    name = "首页"
+    url = "/"
+    weight = 1
+    identifier = "home"
+
+[[social]]
+    name = "GitHub"
+    url = "https://github.com/w2343419-del"
+    identifier = "github"
