@@ -2,16 +2,16 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
     <channel>
         <title>首页 on 望的博客</title>
-        <link>/</link>
+        <link>http://localhost:1313/WangScape/</link>
         <description>Recent content in 首页 on 望的博客</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
-        <lastBuildDate>Wed, 21 Jan 2026 19:39:21 +0800</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Wed, 21 Jan 2026 19:39:21 +0800</lastBuildDate><atom:link href="http://localhost:1313/WangScape/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>你好，欢迎来到我的博客</title>
-        <link>/p/%E4%BD%A0%E5%A5%BD%E6%AC%A2%E8%BF%8E%E6%9D%A5%E5%88%B0%E6%88%91%E7%9A%84%E5%8D%9A%E5%AE%A2/</link>
+        <link>http://localhost:1313/WangScape/p/%E4%BD%A0%E5%A5%BD%E6%AC%A2%E8%BF%8E%E6%9D%A5%E5%88%B0%E6%88%91%E7%9A%84%E5%8D%9A%E5%AE%A2/</link>
         <pubDate>Wed, 21 Jan 2026 19:39:21 +0800</pubDate>
         
-        <guid>/p/%E4%BD%A0%E5%A5%BD%E6%AC%A2%E8%BF%8E%E6%9D%A5%E5%88%B0%E6%88%91%E7%9A%84%E5%8D%9A%E5%AE%A2/</guid>
+        <guid>http://localhost:1313/WangScape/p/%E4%BD%A0%E5%A5%BD%E6%AC%A2%E8%BF%8E%E6%9D%A5%E5%88%B0%E6%88%91%E7%9A%84%E5%8D%9A%E5%AE%A2/</guid>
         <description>&lt;p&gt;经过了近一天的半天的自我怀疑、半天的与AI搏斗（doge）、和全天的用头和桌子比谁更硬……&lt;/p&gt;
 &lt;p&gt;2026年1月21日最终成为了一个对我而言非同寻常的日子。&lt;/p&gt;
 &lt;p&gt;我的个人博客终于上线了！！！&lt;/p&gt;
@@ -29,26 +29,26 @@
         </item>
         <item>
         <title>归档</title>
-        <link>/archives/</link>
+        <link>http://localhost:1313/WangScape/archives/</link>
         <pubDate>Wed, 21 Jan 2026 00:00:00 +0000</pubDate>
         
-        <guid>/archives/</guid>
+        <guid>http://localhost:1313/WangScape/archives/</guid>
         <description></description>
         </item>
         <item>
         <title>搜索</title>
-        <link>/search/</link>
+        <link>http://localhost:1313/WangScape/search/</link>
         <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
         
-        <guid>/search/</guid>
+        <guid>http://localhost:1313/WangScape/search/</guid>
         <description></description>
         </item>
         <item>
         <title>友情链接</title>
-        <link>/links/</link>
+        <link>http://localhost:1313/WangScape/links/</link>
         <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
         
-        <guid>/links/</guid>
+        <guid>http://localhost:1313/WangScape/links/</guid>
         <description></description>
         </item>
         
