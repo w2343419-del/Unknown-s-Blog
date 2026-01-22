@@ -1,21 +1,54 @@
 <!-- Umami 统计 -->
-<script defer src="https://unknown-qzthzzic4-w2343419-dels-projects.vercel.app/script.js" data-website-id="aee9b0a3-00c8-4037-8b99-e6bb4c336cb9"></script>
+<script defer src="https://unknown-qzthzzic4-w2343419-dels-projects.vercel.app/script.js"
+    data-website-id="aee9b0a3-00c8-4037-8b99-e6bb4c336cb9"></script>
+
+<!-- Umami 阅读量显示 -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const umamiInstance = "https://unknown-qzthzzic4-w2343419-dels-projects.vercel.app";
+        const websiteId = "aee9b0a3-00c8-4037-8b99-e6bb4c336cb9";
+        const viewsElement = document.querySelector('[data-umami-page-pv] .umami-value');
+
+        if (viewsElement) {
+            // 使用 Umami 的公共 API 获取当前页面的 PV
+            // 注意：这取决于 Umami 是否允许公共访问统计数据，
+            // 或者是否配置了公开共享链接。
+            const currentPath = window.location.pathname;
+            const startAt = new Date(2020, 0, 1).getTime(); // 从很早以前开始统计
+            const endAt = Date.now();
+
+            const apiUrl = `${umamiInstance}/api/websites/${websiteId}/stats?startAt=${startAt}&endAt=${endAt}&url=${encodeURIComponent(currentPath)}`;
+
+            // 尝试从 localStorage 缓存中读取或直接发送请求
+            // 由于 Umami API 权限限制，这里通常需要公开共享令牌
+            // 如果没有公开令牌，这里可能返回 0 或 401
+            fetch(apiUrl)
+                .then(res => res.json())
+                .then(data => {
+                    if (data && data.pageviews) {
+                        viewsElement.innerText = data.pageviews.value;
+                    }
+                })
+                .catch(err => console.error('Umami views fetch error:', err));
+        }
+    });
+</script>
 
 <!-- 点击文章卡片进入阅读 -->
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('.article-list article').forEach(function(article) {
-        article.addEventListener('click', function(e) {
-            // 如果点击的是链接，不处理
-            if (e.target.tagName === 'A' || e.target.closest('a')) {
-                return;
-            }
-            // 找到文章标题链接并跳转
-            const link = article.querySelector('.article-title a');
-            if (link) {
-                window.location.href = link.href;
-            }
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.article-list article').forEach(function (article) {
+            article.addEventListener('click', function (e) {
+                // 如果点击的是链接，不处理
+                if (e.target.tagName === 'A' || e.target.closest('a')) {
+                    return;
+                }
+                // 找到文章标题链接并跳转
+                const link = article.querySelector('.article-title a');
+                if (link) {
+                    window.location.href = link.href;
+                }
+            });
         });
     });
-});
 </script>
