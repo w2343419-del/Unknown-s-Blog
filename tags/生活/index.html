@@ -6,7 +6,7 @@
 
 <link rel='canonical' href='http://localhost:1313/WangScape/tags/%E7%94%9F%E6%B4%BB/'>
 
-<link rel="stylesheet" href="/WangScape/scss/style.min.761c9644ed0b67eaaa6ea370d87bfa696678f4eeef58a32aea599e095a2c5474.css"><meta property='og:title' content="Tag: 生活 - 望境">
+<link rel="stylesheet" href="/WangScape/scss/style.min.2dede96364017e1734170efc10ea18bde79b802e6600a3a8a34f90c42c3e46ad.css"><meta property='og:title' content="Tag: 生活 - 望境">
 <meta property='og:description' content="偏我去时花满楼，偏我来时不逢春。">
 <meta property='og:url' content='http://localhost:1313/WangScape/tags/%E7%94%9F%E6%B4%BB/'>
 <meta property='og:site_name' content='望境'>
@@ -15,27 +15,59 @@
 <meta name="twitter:description" content="偏我去时花满楼，偏我来时不逢春。"><link rel="alternate" type="application/rss&#43;xml" href="http://localhost:1313/WangScape/tags/%E7%94%9F%E6%B4%BB/index.xml">
     <link rel="shortcut icon" href="/favicon.png" />
 
-<script defer src="https://unknown-qzthzzic4-w2343419-dels-projects.vercel.app/script.js" data-website-id="aee9b0a3-00c8-4037-8b99-e6bb4c336cb9"></script>
+<script defer src="https://unknown-qzthzzic4-w2343419-dels-projects.vercel.app/script.js"
+    data-website-id="aee9b0a3-00c8-4037-8b99-e6bb4c336cb9"></script>
 
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('.article-list article').forEach(function(article) {
-        article.addEventListener('click', function(e) {
+    document.addEventListener('DOMContentLoaded', function () {
+        const umamiInstance = "https://unknown-qzthzzic4-w2343419-dels-projects.vercel.app";
+        const websiteId = "aee9b0a3-00c8-4037-8b99-e6bb4c336cb9";
+        const viewsElement = document.querySelector('[data-umami-page-pv] .umami-value');
+
+        if (viewsElement) {
             
-            if (e.target.tagName === 'A' || e.target.closest('a')) {
-                return;
-            }
             
-            const link = article.querySelector('.article-title a');
-            if (link) {
-                window.location.href = link.href;
-            }
-        });
+            
+            const currentPath = window.location.pathname;
+            const startAt = new Date(2020, 0, 1).getTime(); 
+            const endAt = Date.now();
+
+            const apiUrl = `${umamiInstance}/api/websites/${websiteId}/stats?startAt=${startAt}&endAt=${endAt}&url=${encodeURIComponent(currentPath)}`;
+
+            
+            
+            
+            fetch(apiUrl)
+                .then(res => res.json())
+                .then(data => {
+                    if (data && data.pageviews) {
+                        viewsElement.innerText = data.pageviews.value;
+                    }
+                })
+                .catch(err => console.error('Umami views fetch error:', err));
+        }
     });
-});
 </script>
 
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.article-list article').forEach(function (article) {
+            article.addEventListener('click', function (e) {
+                
+                if (e.target.tagName === 'A' || e.target.closest('a')) {
+                    return;
+                }
+                
+                const link = article.querySelector('.article-title a');
+                if (link) {
+                    window.location.href = link.href;
+                }
+            });
+        });
+    });
+</script>
     </head>
     <body class="">
     <script>
