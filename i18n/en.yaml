@@ -1,0 +1,10 @@
+article:
+    views:
+        one: " view"
+        other: " views"
+selectLanguage:
+    other: "中文"
+darkMode:
+    other: "Dark Mode"
+toggleMenu:
+    other: "Toggle Menu"

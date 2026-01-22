@@ -1,0 +1,9 @@
+article:
+    views:
+        other: " 次阅读"
+selectLanguage:
+    other: "English"
+darkMode:
+    other: "暗色模式"
+toggleMenu:
+    other: "切换菜单"

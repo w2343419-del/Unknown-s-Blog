@@ -7,35 +7,35 @@
 
     <header>
         {{ with .Site.Params.sidebar.avatar }}
-            {{ if (default true .enabled) }}
-            <figure class="site-avatar">
-                {{- $avatarSrc := "" -}}
-                {{ if not .local }}
-                    {{- $avatarSrc = .src -}}
-                    <a href="javascript:void(0)" class="avatar-link" data-avatar="{{ .src }}">
-                        <img src="{{ .src }}" width="300" height="300" class="site-logo" loading="lazy" alt="Avatar">
-                    </a>
-                {{ else }}
-                    {{ $avatar := resources.Get (.src) }}
-                    
-                    {{ if $avatar }}
-                        {{ $avatarResized := $avatar.Resize "300x" }}
-                        {{- $avatarSrc = $avatar.RelPermalink -}}
-                        <a href="javascript:void(0)" class="avatar-link" data-avatar="{{ $avatar.RelPermalink }}">
-                            <img src="{{ $avatarResized.RelPermalink }}" width="{{ $avatarResized.Width }}"
-                                height="{{ $avatarResized.Height }}" class="site-logo" loading="lazy" alt="Avatar">
-                        </a>
-                    {{ else }}
-                        {{ errorf "Failed loading avatar from %q" . }}
-                    {{ end }}
-                {{ end }}
-                {{ with $.Site.Params.sidebar.emoji }}
-                    <span class="emoji">{{ . }}</span>
-                {{ end }}
-            </figure>
+        {{ if (default true .enabled) }}
+        <figure class="site-avatar">
+            {{- $avatarSrc := "" -}}
+            {{ if not .local }}
+            {{- $avatarSrc = .src -}}
+            <a href="javascript:void(0)" class="avatar-link" data-avatar="{{ .src }}">
+                <img src="{{ .src }}" width="300" height="300" class="site-logo" loading="lazy" alt="Avatar">
+            </a>
+            {{ else }}
+            {{ $avatar := resources.Get (.src) }}
+
+            {{ if $avatar }}
+            {{ $avatarResized := $avatar.Resize "300x" }}
+            {{- $avatarSrc = $avatar.RelPermalink -}}
+            <a href="javascript:void(0)" class="avatar-link" data-avatar="{{ $avatar.RelPermalink }}">
+                <img src="{{ $avatarResized.RelPermalink }}" width="{{ $avatarResized.Width }}"
+                    height="{{ $avatarResized.Height }}" class="site-logo" loading="lazy" alt="Avatar">
+            </a>
+            {{ else }}
+            {{ errorf "Failed loading avatar from %q" . }}
             {{ end }}
+            {{ end }}
+            {{ with $.Site.Params.sidebar.emoji }}
+            <span class="emoji">{{ . }}</span>
+            {{ end }}
+        </figure>
         {{ end }}
-        
+        {{ end }}
+
         <div class="site-meta">
             <h1 class="site-name"><a href="{{ .Site.BaseURL | relLangURL }}">{{ .Site.Title }}</a></h1>
             <h2 class="site-description">{{ .Site.Params.sidebar.subtitle }}</h2>
@@ -43,69 +43,65 @@
     </header>
 
     {{- with .Site.Menus.social -}}
-        <ol class="menu-social">
-            {{ range . }}
-                <li>
-                    <a 
-                        href='{{ .URL }}'
-                        {{ if eq (default true .Params.newTab) true }}target="_blank"{{ end }}
-                        {{ with .Name }}title="{{ . }}"{{ end }}
-                        rel="me"
-                    >
-                        {{ $icon := default "link" .Params.Icon }}
-                        {{ with $icon }}
-                            {{ partial "helper/icon" . }}
-                        {{ end }}
-                    </a>
-                </li>
-            {{ end }}
-        </ol>
+    <ol class="menu-social">
+        {{ range . }}
+        <li>
+            <a href='{{ .URL }}' {{ if eq (default true .Params.newTab) true }}target="_blank" {{ end }} {{ with .Name
+                }}title="{{ . }}" {{ end }} rel="me">
+                {{ $icon := default "link" .Params.Icon }}
+                {{ with $icon }}
+                {{ partial "helper/icon" . }}
+                {{ end }}
+            </a>
+        </li>
+        {{ end }}
+    </ol>
     {{- end -}}
 
     <ol class="menu" id="main-menu">
         {{ $currentPage := . }}
         {{ range .Site.Menus.main }}
-        {{ $active := or (eq $currentPage.RelPermalink .URL) (or ($currentPage.HasMenuCurrent "main" .) ($currentPage.IsMenuCurrent "main" .)) }}
+        {{ $active := or (eq $currentPage.RelPermalink .URL) (or ($currentPage.HasMenuCurrent "main" .)
+        ($currentPage.IsMenuCurrent "main" .)) }}
         <li {{ if $active }} class='current' {{ end }}>
-            <a href='{{ .URL }}' {{ if eq .Params.newTab true }}target="_blank"{{ end }}>
+            <a href='{{ .URL }}' {{ if eq .Params.newTab true }}target="_blank" {{ end }}>
                 {{ $icon := default .Pre .Params.Icon }}
                 {{ if .Pre }}
-                    {{ warnf "Menu item [%s] is using [pre] field to set icon, please use [params.icon] instead.\nMore information: https://stack.jimmycai.com/config/menu" .URL }}
+                {{ warnf `Menu item [%s] is using [pre] field to set icon, please use [params.icon] instead. More
+                information: https://stack.jimmycai.com/config/menu` .URL }}
                 {{ end }}
                 {{ with $icon }}
-                    {{ partial "helper/icon" . }}
+                {{ partial "helper/icon" . }}
                 {{ end }}
                 <span>{{- .Name -}}</span>
             </a>
         </li>
         {{ end }}
-        <li class="menu-bottom-section">
-            <ol class="menu">
-                {{- $currentLanguageCode := .Language.Lang -}}
-                {{ if ( compare.Gt .Site.Home.AllTranslations.Len 1 ) }}
-                    {{/* 语言切换 - 和暗色模式一样的样式 */}}
-                    <li id="lang-switch">
-                        {{ partial "helper/icon" "language" }}
-                        {{ range .Site.Home.AllTranslations }}
-                            {{ if ne .Language.Lang $currentLanguageCode }}
-                                <a href="{{ .Permalink }}" class="lang-link">
-                                    {{ if eq .Language.Lang "zh-cn" }}切换中文{{ else if eq .Language.Lang "en" }}Switch to English{{ else }}{{ .Language.LanguageName }}{{ end }}
-                                </a>
-                            {{ end }}
-                        {{ end }}
-                    </li>
-                {{ end }}
-
-                {{ if (default false .Site.Params.colorScheme.toggle) }}
-                    <li id="dark-mode-toggle">
-                        {{ partial "helper/icon" "toggle-left" }}
-                        {{ partial "helper/icon" "toggle-right" }}
-                        <span>{{ T "darkMode" }}</span>
-                    </li>
-                {{ end }}
-            </ol>
-        </li>
     </ol>
+
+    <div class="sidebar-bottom-controls">
+        {{- $currentLanguageCode := .Language.Lang -}}
+        {{ if ( compare.Gt .Site.Home.AllTranslations.Len 1 ) }}
+        <div id="lang-switch">
+            {{ partial "helper/icon" "language" }}
+            {{ range .Site.Home.AllTranslations }}
+            {{ if ne .Language.Lang $currentLanguageCode }}
+            <a href="{{ .Permalink }}" class="lang-link">
+                {{ T "selectLanguage" }}
+            </a>
+            {{ end }}
+            {{ end }}
+        </div>
+        {{ end }}
+
+        {{ if (default false .Site.Params.colorScheme.toggle) }}
+        <div id="dark-mode-toggle">
+            {{ partial "helper/icon" "toggle-left" }}
+            {{ partial "helper/icon" "toggle-right" }}
+            <span>{{ T "darkMode" }}</span>
+        </div>
+        {{ end }}
+    </div>
 </aside>
 
 <!-- 头像弹出层 -->
@@ -117,34 +113,34 @@
 </div>
 
 <script>
-(function() {
-    const avatarLink = document.querySelector('.avatar-link');
-    const modal = document.getElementById('avatar-modal');
-    const modalImg = modal.querySelector('.avatar-modal-img');
-    const overlay = modal.querySelector('.avatar-modal-overlay');
-    
-    if (avatarLink && modal) {
-        avatarLink.addEventListener('click', function(e) {
-            e.preventDefault();
-            const avatarSrc = this.getAttribute('data-avatar');
-            modalImg.src = avatarSrc;
-            modal.classList.add('active');
-            document.body.style.overflow = 'hidden';
-        });
-        
-        function closeModal() {
-            modal.classList.remove('active');
-            document.body.style.overflow = '';
-        }
-        
-        overlay.addEventListener('click', closeModal);
-        modal.querySelector('.avatar-modal-content').addEventListener('click', closeModal);
-        
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' && modal.classList.contains('active')) {
-                closeModal();
+    (function () {
+        const avatarLink = document.querySelector('.avatar-link');
+        const modal = document.getElementById('avatar-modal');
+        const modalImg = modal.querySelector('.avatar-modal-img');
+        const overlay = modal.querySelector('.avatar-modal-overlay');
+
+        if (avatarLink && modal) {
+            avatarLink.addEventListener('click', function (e) {
+                e.preventDefault();
+                const avatarSrc = this.getAttribute('data-avatar');
+                modalImg.src = avatarSrc;
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            });
+
+            function closeModal() {
+                modal.classList.remove('active');
+                document.body.style.overflow = '';
             }
-        });
-    }
-})();
+
+            overlay.addEventListener('click', closeModal);
+            modal.querySelector('.avatar-modal-content').addEventListener('click', closeModal);
+
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape' && modal.classList.contains('active')) {
+                    closeModal();
+                }
+            });
+        }
+    })();
 </script>

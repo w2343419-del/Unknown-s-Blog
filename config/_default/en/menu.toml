@@ -1,4 +1,4 @@
-[[main]] 
+[[main]]
     identifier = "home"
     name = "Home"
     pageRef = "/"
@@ -48,7 +48,7 @@
 
 [[social]]
     identifier = "email"
-    name = "E-mail"
+    name = "Email"
     url = "https://mail.google.com/mail/?view=cm&fs=1&to=w2343419@gmail.com"
     weight = 3
     [social.params]

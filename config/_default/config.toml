@@ -10,28 +10,3 @@ hasCJKLanguage = true
 [pagination]
 pagerSize = 5
 
-# ===== 语言配置 =====
-[languages]
-  [languages."zh-cn"]
-  languageName = "中文"
-  weight = 1
-  contentDir = "content/zh-cn"
-  title = "望境"
-
-    [languages."zh-cn".params]
-    description = "偏我去时花满楼，偏我来时不逢春。"
-
-    [languages."zh-cn".params.sidebar]
-    subtitle = "偏我去时花满楼，偏我来时不逢春。"
-
-  [languages.en]
-  languageName = "English"
-  weight = 2
-  contentDir = "content/en"
-  title = "WangScape"
-
-    [languages.en.params]
-    description = "Waiting for flowers when leaving, arriving when spring is gone."
-
-    [languages.en.params.sidebar]
-    subtitle = "Waiting for flowers when leaving, arriving when spring is gone."

@@ -2,27 +2,27 @@
 {{- $context := .Context -}}
 {{- $ThemeVersion := "3.33.0" -}}
 {{- with (index .Context.Site.Params.widgets $scope) -}}
-    <aside class="sidebar right-sidebar sticky">
+<aside class="sidebar right-sidebar sticky">
+    <div class="sidebar-widgets">
         {{ range $widget := . }}
-            {{ if templates.Exists (printf "partials/widget/%s.html" .type) }}
-                {{- $params := default dict .params -}}
-                {{ partial (printf "widget/%s" .type) (dict "Context" $context "Params" $params) }}
-            {{ else }}
-                {{ warnf "Widget %s not found" .type }}
-            {{ end }}
+        {{ if templates.Exists (printf "partials/widget/%s.html" .type) }}
+        {{- $params := default dict .params -}}
+        {{ partial (printf "widget/%s" .type) (dict "Context" $context "Params" $params) }}
+        {{ else }}
+        {{ warnf "Widget %s not found" .type }}
         {{ end }}
-        
-        {{/* 页脚信息放在右侧栏底部 */}}
-        <section class="widget sidebar-footer">
-            <div class="copyright">
-                &copy; 
-                {{ if and ($context.Site.Params.footer.since) (ne $context.Site.Params.footer.since (int (now.Format "2006"))) }}
-                    {{ $context.Site.Params.footer.since }} - 
-                {{ end }}
-                {{ now.Format "2006" }} {{ default $context.Site.Title $context.Site.Copyright }}
-            </div>
+        {{ end }}
+    </div>
 
-                <!-- powerby 区块已移除 -->
-        </section>
-    </aside>
+    <section class="widget sidebar-footer">
+        <div class="copyright">
+            &copy;
+            {{ if and ($context.Site.Params.footer.since) (ne $context.Site.Params.footer.since (int (now.Format
+            "2006"))) }}
+            {{ $context.Site.Params.footer.since }} -
+            {{ end }}
+            {{ now.Format "2006" }} {{ default $context.Site.Title $context.Site.Copyright }}
+        </div>
+    </section>
+</aside>
 {{ end }}
