@@ -1,19 +1,11 @@
 # 基础全局设置
 mainSections = ["post"]
 rssFullContent = true
-favicon = "/favicon.png"
+favicon = "favicon.png"
 
 # --- 多语言核心配置 ---
 defaultContentLanguage = "zh-cn"
 hasCJKLanguage = true
-
-[sidebar]
-    emoji = ""
-    subtitle = "偏我去时花满楼，偏我来时不逢春。"
-[sidebar.avatar]
-    enabled = true
-    local = true
-    src = "img/avatar.png"
 
 [article]
     readingTime = true

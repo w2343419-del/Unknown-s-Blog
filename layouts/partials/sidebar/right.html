@@ -13,16 +13,5 @@
         {{ end }}
         {{ end }}
     </div>
-
-    <section class="widget sidebar-footer">
-        <div class="copyright">
-            &copy;
-            {{ if and ($context.Site.Params.footer.since) (ne $context.Site.Params.footer.since (int (now.Format
-            "2006"))) }}
-            {{ $context.Site.Params.footer.since }} -
-            {{ end }}
-            {{ now.Format "2006" }} {{ default $context.Site.Title $context.Site.Copyright }}
-        </div>
-    </section>
 </aside>
 {{ end }}

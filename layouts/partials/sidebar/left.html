@@ -1,39 +1,45 @@
-<aside class="sidebar left-sidebar sticky {{ if .Site.Params.sidebar.compact }}compact{{ end }}">
-    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="{{ T `toggleMenu` }}">
+<aside class="sidebar left-sidebar sticky">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="{{ T " toggleMenu" }}">
         <span class="hamburger-box">
             <span class="hamburger-inner"></span>
         </span>
     </button>
 
     <header>
-        {{ with .Site.Params.sidebar.avatar }}
-        {{ if (default true .enabled) }}
-        <figure class="site-avatar">
-            {{- $avatarSrc := "" -}}
-            {{ if not .local }}
-            {{- $avatarSrc = .src -}}
-            <a href="javascript:void(0)" class="avatar-link" data-avatar="{{ .src }}">
-                <img src="{{ .src }}" width="300" height="300" class="site-logo" loading="lazy" alt="Avatar">
-            </a>
-            {{ else }}
-            {{ $avatar := resources.Get (.src) }}
+        {{/*
+        Robust Avatar Check:
+        If avatar is a boolean true, treat it as enabled but using default.
+        If it's an object, use its properties.
+        */}}
+        {{- $avatar := .Site.Params.sidebar.avatar -}}
+        {{- $avatarEnabled := false -}}
+        {{- if reflect.IsMap $avatar -}}
+        {{- $avatarEnabled = default true $avatar.enabled -}}
+        {{- else if $avatar -}}
+        {{- $avatarEnabled = true -}}
+        {{- end -}}
 
-            {{ if $avatar }}
-            {{ $avatarResized := $avatar.Resize "300x" }}
-            {{- $avatarSrc = $avatar.RelPermalink -}}
-            <a href="javascript:void(0)" class="avatar-link" data-avatar="{{ $avatar.RelPermalink }}">
-                <img src="{{ $avatarResized.RelPermalink }}" width="{{ $avatarResized.Width }}"
-                    height="{{ $avatarResized.Height }}" class="site-logo" loading="lazy" alt="Avatar">
+        {{ if $avatarEnabled }}
+        <figure class="site-avatar">
+            {{- $src := "/img/avatar.png" -}}
+            {{- $isLocal := true -}}
+            {{- if reflect.IsMap $avatar -}}
+            {{- if $avatar.src }}{{ $src = $avatar.src }}{{ end -}}
+            {{- if isset $avatar "local" }}{{ $isLocal = $avatar.local }}{{ end -}}
+            {{- end -}}
+
+            {{/* 使用 absURL 确保在子路径部署时图片路径绝对正确 */}}
+            {{- $avatarPath := trim $src "/" -}}
+
+            <a href="javascript:void(0)" class="avatar-link" data-avatar="{{ $avatarPath | absURL }}">
+                <img src="{{ $avatarPath | absURL }}" width="300" height="300" class="site-logo" loading="lazy"
+                    alt="Avatar">
             </a>
-            {{ else }}
-            {{ errorf "Failed loading avatar from %q" . }}
-            {{ end }}
-            {{ end }}
+
             {{ with $.Site.Params.sidebar.emoji }}
             <span class="emoji">{{ . }}</span>
             {{ end }}
         </figure>
-        {{ end }}
         {{ end }}
 
         <div class="site-meta">
@@ -64,12 +70,9 @@
         {{ $active := or (eq $currentPage.RelPermalink .URL) (or ($currentPage.HasMenuCurrent "main" .)
         ($currentPage.IsMenuCurrent "main" .)) }}
         <li {{ if $active }} class='current' {{ end }}>
-            <a href='{{ .URL }}' {{ if eq .Params.newTab true }}target="_blank" {{ end }}>
+            {{/* Use relLangURL to ensure links stay in current language */}}
+            <a href='{{ .URL | relLangURL }}' {{ if eq .Params.newTab true }}target="_blank" {{ end }}>
                 {{ $icon := default .Pre .Params.Icon }}
-                {{ if .Pre }}
-                {{ warnf `Menu item [%s] is using [pre] field to set icon, please use [params.icon] instead. More
-                information: https://stack.jimmycai.com/config/menu` .URL }}
-                {{ end }}
                 {{ with $icon }}
                 {{ partial "helper/icon" . }}
                 {{ end }}
@@ -101,6 +104,11 @@
             <span>{{ T "darkMode" }}</span>
         </div>
         {{ end }}
+
+        {{/* Fixed Copyright below toggles */}}
+        <div class="sidebar-copyright">
+            &copy; {{ now.Format "2006" }} {{ default .Site.Title .Site.Copyright }}
+        </div>
     </div>
 </aside>
 

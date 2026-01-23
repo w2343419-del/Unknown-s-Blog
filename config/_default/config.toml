@@ -10,3 +10,7 @@ hasCJKLanguage = true
 [pagination]
 pagerSize = 5
 
+[minify]
+  disableXML = true
+  minifyOutput = true
+

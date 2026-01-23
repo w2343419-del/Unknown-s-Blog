@@ -1,11 +1,83 @@
-["zh-cn"]
+[zh-cn]
 languageName = "中文"
 title = "望境"
 weight = 1
 contentDir = "content/zh-cn"
 
-["en"]
+[zh-cn.params.sidebar]
+    subtitle = "偏我去时花满楼，偏我来时不逢春。"
+    avatar = { enabled = true, local = true, src = "img/avatar.png" }
+
+[[zh-cn.menu.main]]
+    identifier = "home"
+    name = "首页"
+    pageRef = "/"
+    weight = 1
+    [zh-cn.menu.main.params]
+        icon = "home"
+
+[[zh-cn.menu.main]]
+    identifier = "archives"
+    name = "归档"
+    pageRef = "/page/archives"
+    weight = 2
+    [zh-cn.menu.main.params]
+        icon = "archives"
+
+[[zh-cn.menu.main]]
+    identifier = "search"
+    name = "搜索"
+    pageRef = "/page/search"
+    weight = 3
+    [zh-cn.menu.main.params]
+        icon = "search"
+
+[[zh-cn.menu.main]]
+    identifier = "links"
+    name = "友情链接"
+    pageRef = "/page/links"
+    weight = 4
+    [zh-cn.menu.main.params]
+        icon = "link"
+
+[en]
 languageName = "English"
 title = "WangScape"
 weight = 2
 contentDir = "content/en"
+
+[en.params.sidebar]
+    subtitle = "Waiting for flowers when leaving..."
+    avatar = { enabled = true, local = true, src = "img/avatar.png" }
+
+[[en.menu.main]]
+    identifier = "home"
+    name = "Home"
+    pageRef = "/"
+    weight = 1
+    [en.menu.main.params]
+        icon = "home"
+
+[[en.menu.main]]
+    identifier = "archives"
+    name = "Archives"
+    pageRef = "/page/archives"
+    weight = 2
+    [en.menu.main.params]
+        icon = "archives"
+
+[[en.menu.main]]
+    identifier = "search"
+    name = "Search"
+    pageRef = "/page/search"
+    weight = 3
+    [en.menu.main.params]
+        icon = "search"
+
+[[en.menu.main]]
+    identifier = "links"
+    name = "Links"
+    pageRef = "/page/links"
+    weight = 4
+    [en.menu.main.params]
+        icon = "link"
