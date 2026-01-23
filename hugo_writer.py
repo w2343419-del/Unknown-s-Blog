@@ -337,13 +337,17 @@ HTML_TEMPLATE = """
             </div>
             <div>
                 <span id="current-doc-name" style="opacity:0.8; margin-right:20px; font-size:13px;"></span>
+                <span id="save-status" style="font-size:12px; margin-right:15px; color:#ddd;"></span>
                 <button class="word-back-btn" onclick="toggleLang()" style="display:inline-flex;">EN / 中</button>
             </div>
         </div>
         
         <div class="word-ribbon">
+            <button class="word-rib-btn" onclick="saveDocument()">
+                <span>💾</span> Save
+            </button>
             <button class="word-rib-btn" onclick="runCommand('deploy')">
-                <span>💾</span> Save & Publish
+                <span>🚀</span> Publish
             </button>
             <button class="word-rib-btn" onclick="runCommand('preview')">
                 <span>👁</span> Preview Site
@@ -354,37 +358,23 @@ HTML_TEMPLATE = """
             <div class="word-canvas">
                 <div class="word-paper" id="paper-content">
                     <div style="text-align:center; color:#999; margin-top:100px;">
-                        Loading document content...
+                        Select a document to edit.
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- CREATE MODAL -->
-    <div class="modal-overlay" id="create-modal">
-        <div class="modal-card">
-            <h2 style="margin-top:0">创作新篇章</h2>
-            <label>文章标题 (中文)</label>
-            <input type="text" id="postTitle" placeholder="例如：冬日随笔">
-            <label>分类 (Categories)</label>
-            <input type="text" id="postCat" placeholder="Life, Code">
-            <p style="font-size:12px; color:var(--dash-text-dim)">* 系统将自动生成双语版本 (zh-cn/en)。</p>
-            <div style="text-align:right">
-                <button class="btn-cancel" onclick="closeCreateModal()">取消</button>
-                <button class="btn-confirm" onclick="createPost()">立即创建</button>
-            </div>
-        </div>
-    </div>
+    <!-- ... Create Modal ... -->
 
     <script>
-        // --- LOGIC ---
         let postsData = [];
-        let currentLang = 'zh';
+        let currentDocPath = '';
 
         function switchView(viewName) {
             document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
             document.getElementById(viewName + '-view').classList.add('active');
+            if(viewName === 'dashboard') fetchPosts(); // Refresh list on return
         }
 
         async function init() {
@@ -400,39 +390,78 @@ HTML_TEMPLATE = """
         function renderDashboardList() {
             const list = document.getElementById('dash-post-list');
             list.innerHTML = postsData.map(p => `
-                <div class="dash-post-item" onclick="openEditor('${p.path}', '${p.title}', '${p.date}')">
-                    <div>
+                <div class="dash-post-item">
+                    <div onclick="openEditor('${p.path}', '${p.title}', '${p.date}')" style="flex:1; cursor:pointer;">
                         <div class="dpi-title">${p.title}</div>
                         <div class="dpi-meta">${p.date} · ${p.lang.toUpperCase()} · ${p.path}</div>
                     </div>
-                    <div class="dpi-status">已就绪</div>
+                    <div style="display:flex; gap:10px; align-items:center;">
+                         <button onclick="deleteDocument('${p.path}')" style="background:transparent; border:1px solid #333; color:#666; width:24px; height:24px; border-radius:4px; cursor:pointer; display:flex; align-items:center; justify-content:center;">🗑</button>
+                         <div class="dpi-status">已就绪</div>
+                    </div>
                 </div>
             `).join('');
         }
 
         async function openEditor(path, title, date) {
+            currentDocPath = path;
             switchView('editor');
             document.getElementById('current-doc-name').textContent = title;
             const paper = document.getElementById('paper-content');
-            paper.innerHTML = `<div style="text-align:center; margin-top:50px; color:#888;">正在加载内容...</div>`;
+            paper.innerHTML = `<div style="text-align:center; margin-top:50px; color:#888;">Loading...</div>`;
             
             try {
                 const res = await fetch('/api/get_content?path=' + encodeURIComponent(path));
                 const data = await res.json();
-                const content = data.content
-                    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
-                    .replace(/\\n/g, "<br>");
                 
+                // Use a textarea for editing
                 paper.innerHTML = `
                     <div class="wp-title">${title}</div>
-                    <div style="font-size:12px; color:#999; margin-bottom:20px;">
-                        Date: ${date} | Path: ${path}
-                    </div>
-                    <div class="wp-content" style="white-space: pre-wrap;">${content}</div>
+                    <div style="font-size:12px; color:#999; margin-bottom:20px;">Date: ${date}</div>
+                    <textarea id="editor-textarea" spellcheck="false" 
+                        style="width:100%; height:800px; border:none; resize:none; outline:none; font-family:'Inter', monospace; font-size:15px; line-height:1.6; color:#333;">${data.content}</textarea>
                 `;
             } catch(e) {
                 paper.innerHTML = `<div style="color:red">Error loading content: ${e}</div>`;
             }
+        }
+
+        async function saveDocument() {
+            if(!currentDocPath) return;
+            const content = document.getElementById('editor-textarea').value;
+            const statusEl = document.getElementById('save-status');
+            statusEl.textContent = "Saving...";
+            
+            try {
+                const res = await fetch('/api/save_content', {
+                    method: 'POST',
+                    body: JSON.stringify({ path: currentDocPath, content: content })
+                });
+                const data = await res.json();
+                if(data.success) {
+                    statusEl.textContent = "Saved " + new Date().toLocaleTimeString();
+                    setTimeout(() => statusEl.textContent = "", 3000);
+                } else {
+                    alert("Save failed: " + data.message);
+                }
+            } catch(e) { alert("Err: " + e); }
+        }
+
+        async function deleteDocument(path) {
+            if(!confirm("确定要删除这篇文章吗？操作不可恢复。\\nAre you sure you want to delete this post?")) return;
+            
+            try {
+                const res = await fetch('/api/delete_post', {
+                    method: 'POST',
+                    body: JSON.stringify({ path: path })
+                });
+                const data = await res.json();
+                if(data.success) {
+                    fetchPosts(); // Reload list
+                } else {
+                    alert("Delete failed: " + data.message);
+                }
+            } catch(e) { alert("Err: " + e); }
         }
 
         // --- COMMANDS & CREATION ---
@@ -451,9 +480,9 @@ HTML_TEMPLATE = """
                 });
                 const data = await res.json();
                 if(data.success) {
-                    alert('创建成功！');
                     closeCreateModal();
                     await fetchPosts();
+                    alert('创建成功！请在列表中点击编辑。');
                 } else {
                     alert('失败: ' + data.message);
                 }
@@ -467,8 +496,7 @@ HTML_TEMPLATE = """
         }
         
         function toggleLang() {
-            // Placeholder for UI localization toggle locally in editor
-            alert("语言切换功能已预留 (Switching UI Language...)");
+            alert("界面语言切换功能将在下一次更新中完善\\nUI Language toggle coming next update");
         }
 
         init();
@@ -514,11 +542,61 @@ class HugoHandler(http.server.BaseHTTPRequestHandler):
             return f"Error reading file: {str(e)}"
 
     def do_POST(self):
+        content_length = int(self.headers['Content-Length'])
+        post_data = json.loads(self.rfile.read(content_length).decode())
+        
         if self.path == '/api/create_sync':
-            content_length = int(self.headers['Content-Length'])
-            post_data = json.loads(self.rfile.read(content_length).decode())
             success, result = self.create_sync_post(post_data)
             self.send_json({"success": success, **result})
+        elif self.path == '/api/save_content':
+            success, msg = self.save_content(post_data)
+            self.send_json({"success": success, "message": msg})
+        elif self.path == '/api/delete_post':
+            success, msg = self.delete_post(post_data)
+            self.send_json({"success": success, "message": msg})
+        else:
+            self.send_error(404)
+
+    def save_content(self, data):
+        try:
+            rel_path = data.get('path')
+            content = data.get('content')
+            full_path = os.path.join(HUGO_PATH, rel_path)
+            
+            # Ensure we are saving to a valid path inside HUGO_PATH
+            if not os.path.abspath(full_path).startswith(HUGO_PATH):
+                return False, "Invalid path security violation"
+
+            with open(full_path, 'w', encoding='utf-8') as f:
+                f.write(content)
+            return True, "Saved successfully"
+        except Exception as e:
+            return False, str(e)
+
+    def delete_post(self, data):
+        try:
+            rel_path = data.get('path')
+            full_path = os.path.join(HUGO_PATH, rel_path)
+            
+            # Security check
+            if not os.path.abspath(full_path).startswith(HUGO_PATH):
+                return False, "Invalid path security violation"
+
+            # If it's an index.md in a leaf bundle, deleting the folder might be cleaner
+            # But for safety, let's just delete the file.
+            # Or better, if the parent folder matches the slug and only contains this file, delete the folder.
+            parent_dir = os.path.dirname(full_path)
+            
+            if os.path.exists(full_path):
+                os.remove(full_path)
+                
+            # Check if parent dir is empty now, if so remove it (cleanup leaf bundles)
+            if os.listdir(parent_dir) == []:
+                 os.rmdir(parent_dir)
+
+            return True, "Deleted successfully"
+        except Exception as e:
+            return False, str(e)
 
     def send_json(self, data):
         self.send_response(200)
@@ -616,3 +694,4 @@ def start_server():
 
 if __name__ == "__main__":
     start_server()
+
