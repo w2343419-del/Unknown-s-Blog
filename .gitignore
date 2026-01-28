@@ -1,5 +1,6 @@
 # Hugo 生成文件
 public/
+public_*/
 resources/
 .hugo_build.lock
 
@@ -7,6 +8,11 @@ resources/
 temp.html
 temp2.html
 temp_output.html
+
+# 测试文件夹
+--bind/
+bin/
+theme/
 
 # 系统文件
 .DS_Store

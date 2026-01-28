@@ -52,3 +52,44 @@
         });
     });
 </script>
+
+<!-- 滚动指示器 -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const mainContainer = document.querySelector('.main');
+        if (!mainContainer) return;
+
+        // 创建滚动指示器
+        const indicator = document.createElement('div');
+        indicator.className = 'scroll-indicator';
+        indicator.innerHTML = `
+            <div class="indicator-text">滚动</div>
+            <div class="indicator-arrow"></div>
+        `;
+        document.body.appendChild(indicator);
+
+        // 检测是否可以滚动以及是否到达底部
+        function checkScroll() {
+            const scrollTop = mainContainer.scrollTop;
+            const scrollHeight = mainContainer.scrollHeight;
+            const clientHeight = mainContainer.clientHeight;
+            const scrollableHeight = scrollHeight - clientHeight;
+            
+            // 如果可以滚动且未到达底部90%，显示指示器
+            if (scrollableHeight > 100 && scrollTop < scrollableHeight * 0.9) {
+                indicator.classList.add('show');
+            } else {
+                indicator.classList.remove('show');
+            }
+        }
+
+        // 初始检测
+        setTimeout(checkScroll, 500);
+
+        // 监听滚动事件
+        mainContainer.addEventListener('scroll', checkScroll);
+
+        // 监听窗口大小变化
+        window.addEventListener('resize', checkScroll);
+    });
+</script>
