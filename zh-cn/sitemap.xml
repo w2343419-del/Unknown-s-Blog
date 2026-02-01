@@ -3,7 +3,7 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://w2343419-del.github.io/WangScape/categories/</loc>
-    <lastmod>2026-01-21T19:39:21+08:00</lastmod>
+    <lastmod>2026-01-28T00:00:00+08:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
@@ -15,8 +15,11 @@
                 href="https://w2343419-del.github.io/WangScape/categories/"
                 />
   </url><url>
+    <loc>https://w2343419-del.github.io/WangScape/tags/pagination/</loc>
+    <lastmod>2026-01-28T00:00:00+08:00</lastmod>
+  </url><url>
     <loc>https://w2343419-del.github.io/WangScape/post/</loc>
-    <lastmod>2026-01-21T19:39:21+08:00</lastmod>
+    <lastmod>2026-01-28T00:00:00+08:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
@@ -29,7 +32,7 @@
                 />
   </url><url>
     <loc>https://w2343419-del.github.io/WangScape/tags/</loc>
-    <lastmod>2026-01-21T19:39:21+08:00</lastmod>
+    <lastmod>2026-01-28T00:00:00+08:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
@@ -39,6 +42,28 @@
                 rel="alternate"
                 hreflang="zh-cn"
                 href="https://w2343419-del.github.io/WangScape/tags/"
+                />
+  </url><url>
+    <loc>https://w2343419-del.github.io/WangScape/categories/test/</loc>
+    <lastmod>2026-01-28T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://w2343419-del.github.io/WangScape/tags/test/</loc>
+    <lastmod>2026-01-28T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://w2343419-del.github.io/WangScape/p/%E6%B5%8B%E8%AF%95%E9%95%BF%E6%96%87%E7%AB%A0/</loc>
+    <lastmod>2026-01-28T00:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://w2343419-del.github.io/WangScape/</loc>
+    <lastmod>2026-01-28T00:00:00+08:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://w2343419-del.github.io/WangScape/en/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="zh-cn"
+                href="https://w2343419-del.github.io/WangScape/"
                 />
   </url><url>
     <loc>https://w2343419-del.github.io/WangScape/p/%E4%BD%A0%E5%A5%BD%E6%AC%A2%E8%BF%8E%E6%9D%A5%E5%88%B0%E6%88%91%E7%9A%84%E5%8D%9A%E5%AE%A2/</loc>
@@ -59,19 +84,6 @@
   </url><url>
     <loc>https://w2343419-del.github.io/WangScape/tags/%E7%94%9F%E6%B4%BB/</loc>
     <lastmod>2026-01-21T19:39:21+08:00</lastmod>
-  </url><url>
-    <loc>https://w2343419-del.github.io/WangScape/</loc>
-    <lastmod>2026-01-21T19:39:21+08:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://w2343419-del.github.io/WangScape/en/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="zh-cn"
-                href="https://w2343419-del.github.io/WangScape/"
-                />
   </url><url>
     <loc>https://w2343419-del.github.io/WangScape/tags/%E9%9A%8F%E7%AC%94/</loc>
     <lastmod>2026-01-21T19:39:21+08:00</lastmod>
