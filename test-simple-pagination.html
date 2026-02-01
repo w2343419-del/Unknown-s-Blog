@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>简化换页测试</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(-45deg, #dbeafe 0%, #e0f2fe 25%, #ffffff 50%, #bfdbfe 75%, #f0f9ff 100%);
+            background-size: 200% 200%;
+            animation: gradientWave 15s ease-in-out infinite;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        .main-container {
+            display: flex;
+            height: 100vh;
+            justify-content: center;
+            gap: 40px;
+            padding-top: 20px;
+        }
+        
+        .sidebar {
+            width: 260px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 12px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .main {
+            flex: 1;
+            max-width: 900px;
+            height: 100%;
+            overflow-y: auto !important;
+            overflow-x: hidden !important;
+            padding: 20px;
+            scroll-behavior: smooth;
+            /* 隐藏滚动条 */
+            scrollbar-width: none !important;
+        }
+        
+        .main::-webkit-scrollbar {
+            display: none !important;
+            width: 0 !important;
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            min-height: 200vh; /* 强制高度超过容器 */
+        }
+        
+        h1, h2, h3 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        
+        p {
+            line-height: 1.6;
+            margin-bottom: 15px;
+            color: #666;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+            padding: 20px;
+            background: rgba(102, 126, 234, 0.05);
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        
+        @keyframes gradientWave {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="sidebar">
+            <h3>侧边栏</h3>
+            <p>这是侧边栏内容，用来模拟真实的博客布局。</p>
+            <p>页面内容很长，应该会触发换页功能。</p>
+        </div>
+        
+        <div class="main">
+            <div class="container">
+                <h1>测试长文章标题</h1>
+                
+                <div class="section">
+                    <h2>第一部分：开始</h2>
+                    <p>这是第一段内容。Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                    
+                    <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                    
+                    <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+                </div>
+                
+                <div class="section">
+                    <h2>第二部分：更多内容</h2>
+                    <p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.</p>
+                    
+                    <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident.</p>
+                    
+                    <p>Similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio.</p>
+                </div>
+                
+                <div class="section">
+                    <h2>第三部分：继续添加内容</h2>
+                    <p>Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus.</p>
+                    
+                    <p>Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae.</p>
+                    
+                    <p>Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.</p>
+                </div>
+                
+                <div class="section">
+                    <h2>第四部分：最后的内容</h2>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                    
+                    <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                    
+                    <p>这篇长文章应该足够长来触发换页功能的自动检测。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 极简的换页系统
+        class MinimalPaginator {
+            constructor() {
+                this.init();
+            }
+            
+            init() {
+                const main = document.querySelector('.main');
+                const container = document.querySelector('.container');
+                
+                if (!main || !container) {
+                    console.log('容器未找到');
+                    return;
+                }
+                
+                // 检查内容是否需要换页
+                setTimeout(() => {
+                    const containerHeight = main.clientHeight;
+                    const contentHeight = container.offsetHeight;
+                    
+                    console.log('容器高度:', containerHeight);
+                    console.log('内容高度:', contentHeight);
+                    
+                    if (contentHeight > containerHeight) {
+                        this.createPagination(main);
+                        this.enableSmoothScrolling(main);
+                    }
+                }, 500);
+            }
+            
+            enableSmoothScrolling(main) {
+                // 添加滚动监听来显示换页提示
+                let isScrolling = false;
+                main.addEventListener('scroll', () => {
+                    if (!isScrolling) {
+                        window.requestAnimationFrame(() => {
+                            const scrollTop = main.scrollTop;
+                            const scrollHeight = main.scrollHeight;
+                            const clientHeight = main.clientHeight;
+                            const scrollPercentage = (scrollTop / (scrollHeight - clientHeight)) * 100;
+                            
+                            console.log('滚动进度:', scrollPercentage.toFixed(1) + '%');
+                            isScrolling = false;
+                        });
+                        isScrolling = true;
+                    }
+                });
+            }
+            
+            createPagination(main) {
+                const controls = document.createElement('div');
+                controls.style.cssText = `
+                    position: fixed;
+                    bottom: 30px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    z-index: 1000;
+                    background: rgba(255, 255, 255, 0.95);
+                    backdrop-filter: blur(20px);
+                    padding: 12px 20px;
+                    border-radius: 25px;
+                    border: 1px solid rgba(0, 0, 0, 0.1);
+                    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+                    display: flex;
+                    align-items: center;
+                    gap: 15px;
+                    animation: slideUp 0.4s ease;
+                `;
+                
+                controls.innerHTML = `
+                    <button id="pageUp" style="
+                        display: flex;
+                        align-items: center;
+                        gap: 8px;
+                        padding: 8px 16px;
+                        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                        border: none;
+                        border-radius: 20px;
+                        color: white;
+                        font-size: 14px;
+                        cursor: pointer;
+                        transition: all 0.3s ease;
+                    ">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                        </svg>
+                        <span>上一页</span>
+                    </button>
+                    
+                    <div style="
+                        padding: 6px 12px;
+                        background: rgba(0, 0, 0, 0.05);
+                        border-radius: 15px;
+                        font-size: 14px;
+                        font-weight: 600;
+                        color: #333;
+                    ">
+                        滚动换页
+                    </div>
+                    
+                    <button id="pageDown" style="
+                        display: flex;
+                        align-items: center;
+                        gap: 8px;
+                        padding: 8px 16px;
+                        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                        border: none;
+                        border-radius: 20px;
+                        color: white;
+                        font-size: 14px;
+                        cursor: pointer;
+                        transition: all 0.3s ease;
+                    ">
+                        <span>下一页</span>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z"/>
+                        </svg>
+                    </button>
+                `;
+                
+                // 添加动画样式
+                const style = document.createElement('style');
+                style.textContent = `
+                    @keyframes slideUp {
+                        from {
+                            opacity: 0;
+                            transform: translateX(-50%) translateY(20px);
+                        }
+                        to {
+                            opacity: 1;
+                            transform: translateX(-50%) translateY(0);
+                        }
+                    }
+                `;
+                document.head.appendChild(style);
+                
+                document.body.appendChild(controls);
+                
+                // 添加事件监听
+                document.getElementById('pageUp').addEventListener('click', () => {
+                    main.scrollBy({ top: -main.clientHeight + 100, behavior: 'smooth' });
+                });
+                
+                document.getElementById('pageDown').addEventListener('click', () => {
+                    main.scrollBy({ top: main.clientHeight - 100, behavior: 'smooth' });
+                });
+            }
+        }
+        
+        // 初始化
+        new MinimalPaginator();
+    </script>
+</body>
+</html>

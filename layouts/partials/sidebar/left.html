@@ -7,15 +7,12 @@
 
     <header>
         <figure class="site-avatar">
-            {{ $avatar := .Site.Params.sidebar.avatar }}
-            {{ if $avatar.enabled }}
-            <a href="javascript:void(0)" class="avatar-link" data-avatar="{{ $avatar.src | relURL }}">
-                {{ if $avatar.local }}
-                    <img src="{{ $avatar.src | relURL }}" width="300" height="300" class="site-logo" loading="lazy" alt="Avatar" />
-                {{ else }}
-                    <img src="{{ $avatar.src }}" width="300" height="300" class="site-logo" loading="lazy" alt="Avatar" />
-                {{ end }}
-            </a>
+            {{ $avatar := resources.Get "img/avatar.png" }}
+            {{ if $avatar }}
+                {{ $avatarResized := $avatar.Resize "300x" }}
+                <img src="{{ $avatarResized.RelPermalink }}" width="150" height="150" class="site-logo" alt="Avatar">
+            {{ else }}
+                <img src="/img/avatar.png" width="150" height="150" class="site-logo" alt="Avatar">
             {{ end }}
             {{ with $.Site.Params.sidebar.emoji }}
             <span class="emoji">{{ . }}</span>
@@ -32,7 +29,8 @@
     <ol class="menu-social">
         {{ range . }}
         <li>
-            <a href='{{ .URL }}' {{ if eq (default true .Params.newTab) true }}target="_blank" {{ end }} {{ with .Name }}title="{{ . }}" {{ end }} rel="me">
+            <a href='{{ .URL }}' {{ if eq (default true .Params.newTab) true }}target="_blank" {{ end }} {{ with .Name
+                }}title="{{ . }}" {{ end }} rel="me">
                 {{ $icon := default "link" .Params.Icon }}
                 {{ with $icon }}
                 {{ partial "helper/icon" . }}
@@ -46,10 +44,15 @@
     <ol class="menu" id="main-menu">
         {{ $currentPage := . }}
         {{ range .Site.Menus.main }}
-        {{ $active := or (eq $currentPage.RelPermalink .URL) (or ($currentPage.HasMenuCurrent "main" .) ($currentPage.IsMenuCurrent "main" .)) }}
+        {{ $active := or (eq $currentPage.RelPermalink .URL) (or ($currentPage.HasMenuCurrent "main" .)
+        ($currentPage.IsMenuCurrent "main" .)) }}
         <li {{ if $active }} class='current' {{ end }}>
             <a href='{{ .URL }}' {{ if eq .Params.newTab true }}target="_blank" {{ end }}>
                 {{ $icon := default .Pre .Params.Icon }}
+                {{ if .Pre }}
+                {{ warnf `Menu item [%s] is using [pre] field to set icon, please use [params.icon] instead. More
+                information: https://stack.jimmycai.com/config/menu` .URL }}
+                {{ end }}
                 {{ with $icon }}
                 {{ partial "helper/icon" . }}
                 {{ end }}
@@ -64,16 +67,12 @@
         {{ if ( compare.Gt .Site.Home.AllTranslations.Len 1 ) }}
         <div id="lang-switch">
             {{ partial "helper/icon" "language" }}
-            {{ range .Translations }}
-            <a href="{{ .RelPermalink }}" class="lang-link">
-                {{ if eq .Language.Lang "zh-cn" }}
-                    切换到中文
-                {{ else if eq .Language.Lang "en" }}
-                    Switch to English
-                {{ else }}
-                    {{ .Language.LanguageName }}
-                {{ end }}
+            {{ range .Site.Home.AllTranslations }}
+            {{ if ne .Language.Lang $currentLanguageCode }}
+            <a href="{{ .Permalink }}" class="lang-link">
+                {{ T "selectLanguage" }}
             </a>
+            {{ end }}
             {{ end }}
         </div>
         {{ end }}
@@ -100,33 +99,31 @@
     (function () {
         const avatarLink = document.querySelector('.avatar-link');
         const modal = document.getElementById('avatar-modal');
-        
-        if (!avatarLink || !modal) return;
-        
         const modalImg = modal.querySelector('.avatar-modal-img');
         const overlay = modal.querySelector('.avatar-modal-overlay');
 
-        function openModal(e) {
-            e.preventDefault();
-            const avatarSrc = avatarLink.getAttribute('data-avatar');
-            modalImg.src = avatarSrc;
-            modal.classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
+        if (avatarLink && modal) {
+            avatarLink.addEventListener('click', function (e) {
+                e.preventDefault();
+                const avatarSrc = this.getAttribute('data-avatar');
+                modalImg.src = avatarSrc;
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            });
 
-        function closeModal() {
-            modal.classList.remove('active');
-            document.body.style.overflow = '';
-        }
-
-        avatarLink.addEventListener('click', openModal);
-        overlay.addEventListener('click', closeModal);
-        modal.querySelector('.avatar-modal-content').addEventListener('click', closeModal);
-
-        document.addEventListener('keydown', function (e) {
-            if (e.key === 'Escape' && modal.classList.contains('active')) {
-                closeModal();
+            function closeModal() {
+                modal.classList.remove('active');
+                document.body.style.overflow = '';
             }
-        });
+
+            overlay.addEventListener('click', closeModal);
+            modal.querySelector('.avatar-modal-content').addEventListener('click', closeModal);
+
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape' && modal.classList.contains('active')) {
+                    closeModal();
+                }
+            });
+        }
     })();
 </script>

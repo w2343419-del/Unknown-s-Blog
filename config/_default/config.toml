@@ -8,7 +8,9 @@ defaultContentLanguage = "zh-cn"
 hasCJKLanguage = true
 
 [pagination]
-pagerSize = 5
+pagerSize = 3
+disableAliases = false
+path = 'page'
 
 [minify]
   disableXML = true

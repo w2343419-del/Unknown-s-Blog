@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>换页功能调试</title>
+    <style>
+        :root {
+            --ease-responsive: cubic-bezier(0.4, 0.0, 0.2, 1);
+        }
+        
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: linear-gradient(-45deg, #dbeafe 0%, #e0f2fe 25%, #ffffff 50%, #bfdbfe 75%, #f0f9ff 100%);
+            background-size: 200% 200%;
+            animation: gradientWave 15s var(--ease-responsive) infinite;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        .main-container {
+            display: flex;
+            height: 100vh;
+            justify-content: center;
+            gap: 40px;
+            padding-top: 20px;
+            max-width: 100vw;
+        }
+        
+        .sidebar {
+            width: 260px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 12px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .main {
+            flex: 1;
+            max-width: 900px;
+            height: 100%;
+            overflow: hidden !important;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            transform: translateZ(0);
+        }
+        
+        .container {
+            flex: 1;
+            min-height: 0;
+            padding-bottom: 100px;
+            max-width: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+        }
+        
+        h1, h2, h3 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        
+        p {
+            line-height: 1.6;
+            margin-bottom: 15px;
+            color: #666;
+        }
+        
+        blockquote {
+            background: rgba(102, 126, 234, 0.1);
+            border-left: 4px solid #667eea;
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+        
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        th {
+            background: rgba(102, 126, 234, 0.1);
+            font-weight: 600;
+        }
+        
+        @keyframes gradientWave {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        @keyframes slideUpFade {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* 换页按钮样式 */
+        .content-paginator {
+            position: fixed !important;
+            bottom: 30px !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            z-index: 1000 !important;
+            pointer-events: none !important;
+        }
+        
+        .content-paginator .pagination-content {
+            pointer-events: auto !important;
+        }
+        
+        .pagination-content {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 25px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 50px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            animation: slideUpFade 0.5s var(--ease-responsive);
+        }
+        
+        .paginator-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 25px;
+            color: white;
+            font-weight: 500;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s var(--ease-responsive);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .paginator-btn:hover:not(.disabled) {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .paginator-btn.disabled {
+            background: rgba(200, 200, 200, 0.3);
+            color: rgba(150, 150, 150, 0.8);
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        
+        .page-info {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: 600;
+            color: #333;
+            font-size: 16px;
+            padding: 8px 16px;
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 20px;
+            min-width: 60px;
+            justify-content: center;
+        }
+        
+        .current-page {
+            color: #667eea;
+            font-size: 18px;
+        }
+        
+        .content-paginator {
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s var(--ease-responsive);
+            margin-bottom: 0;
+        }
+        
+        .content-paginator.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="sidebar">
+            <h3>侧边栏</h3>
+            <p>这是侧边栏内容，用来模拟真实的博客布局。</p>
+        </div>
+        
+        <div class="main">
+            <div class="container">
+                <h1>测试长文章标题</h1>
+                
+                <h2>第一章：开始</h2>
+                <p>这是第一段内容。Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                
+                <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                
+                <blockquote>
+                    这是一个引用块，用来测试换页系统如何处理不同类型的HTML元素。引用块通常具有不同的样式和布局，这对于测试换页功能的准确性很重要。
+                </blockquote>
+                
+                <h2>第二章：更多内容</h2>
+                <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+                
+                <p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.</p>
+                
+                <pre><code>// 这是一个代码块
+function testPagination() {
+    const content = document.querySelector('.main > .container');
+    const height = content.offsetHeight;
+    console.log('内容高度:', height);
+    
+    return height > window.innerHeight;
+}</code></pre>
+                
+                <h2>第三章：列表和表格</h2>
+                <p>以下是测试列表：</p>
+                <ol>
+                    <li>第一个项目</li>
+                    <li>第二个项目</li>
+                    <li>第三个项目</li>
+                    <li>第四个项目</li>
+                    <li>第五个项目</li>
+                </ol>
+                
+                <p>以下是测试表格：</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>列1</th>
+                            <th>列2</th>
+                            <th>列3</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>数据1</td>
+                            <td>数据2</td>
+                            <td>数据3</td>
+                        </tr>
+                        <tr>
+                            <td>数据4</td>
+                            <td>数据5</td>
+                            <td>数据6</td>
+                        </tr>
+                        <tr>
+                            <td>数据7</td>
+                            <td>数据8</td>
+                            <td>数据9</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h2>第四章：继续添加内容</h2>
+                <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident.</p>
+                
+                <p>Similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio.</p>
+                
+                <p>Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus.</p>
+                
+                <h2>第五章：最后的内容</h2>
+                <p>Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae.</p>
+                
+                <p>Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.</p>
+                
+                <p>这篇文章应该足够长来触发换页功能的自动检测。</p>
+            </div>
+        </div>
+    </div>
+    
+    <script src="assets/js/content-paginator.js"></script>
+</body>
+</html>

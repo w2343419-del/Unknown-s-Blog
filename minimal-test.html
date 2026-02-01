@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>极简换页测试</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        .main-container {
+            display: flex;
+            height: 100vh;
+            justify-content: center;
+            gap: 40px;
+            padding: 20px;
+        }
+        
+        .sidebar {
+            width: 250px;
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .main {
+            flex: 1;
+            max-width: 800px;
+            height: 100%;
+            overflow-y: auto;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+            /* 隐藏滚动条 */
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        
+        .main::-webkit-scrollbar { display: none; }
+        
+        .container {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            min-height: 250vh; /* 强制超出 */
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1, h2 {
+            color: #333;
+            margin: 30px 0 20px 0;
+        }
+        
+        p {
+            line-height: 1.6;
+            margin-bottom: 15px;
+            color: #666;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="sidebar">
+            <h3>侧边栏</h3>
+            <p>内容很长，应该触发换页。</p>
+        </div>
+        
+        <div class="main">
+            <div class="container">
+                <h1>极简换页测试文章</h1>
+                
+                <div class="section">
+                    <h2>第一部分</h2>
+                    <p>这是第一段内容。Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                    
+                    <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                    
+                    <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+                </div>
+                
+                <div class="section">
+                    <h2>第二部分</h2>
+                    <p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.</p>
+                    
+                    <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident.</p>
+                    
+                    <p>Similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio.</p>
+                </div>
+                
+                <div class="section">
+                    <h2>第三部分</h2>
+                    <p>Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus.</p>
+                    
+                    <p>Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae.</p>
+                    
+                    <p>Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.</p>
+                </div>
+                
+                <div class="section">
+                    <h2>第四部分 - 结尾</h2>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                    
+                    <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                    
+                    <p>这篇文章应该足够长来触发极简换页功能。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 极简换页系统
+        (() => {
+            let currentPage = 1;
+            let totalPages = 1;
+            
+            function init() {
+                const main = document.querySelector('.main');
+                const container = document.querySelector('.container');
+                
+                if (!main || !container) return;
+                
+                setTimeout(() => {
+                    checkAndPaginate(main, container);
+                }, 500);
+            }
+            
+            function checkAndPaginate(main, container) {
+                const containerHeight = main.clientHeight;
+                const contentHeight = container.offsetHeight;
+                
+                console.log('容器高度:', containerHeight);
+                console.log('内容高度:', contentHeight);
+                
+                if (contentHeight <= containerHeight) {
+                    console.log('内容未超出，不需要换页');
+                    return;
+                }
+                
+                totalPages = Math.ceil(contentHeight / containerHeight);
+                console.log('计算页数:', totalPages);
+                
+                createButtons(main);
+            }
+            
+            function createButtons(main) {
+                // 避免重复创建
+                if (document.querySelector('.paginator-controls')) return;
+                
+                const btnGroup = document.createElement('div');
+                btnGroup.className = 'paginator-controls';
+                btnGroup.style.cssText = `
+                    position: fixed;
+                    bottom: 40px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    display: flex;
+                    gap: 15px;
+                    z-index: 999;
+                    background: rgba(0,0,0,0.85);
+                    padding: 10px 20px;
+                    border-radius: 25px;
+                    align-items: center;
+                `;
+                
+                const prevBtn = document.createElement('button');
+                prevBtn.textContent = '◀';
+                prevBtn.style.cssText = `
+                    background: white;
+                    border: none;
+                    width: 40px;
+                    height: 40px;
+                    border-radius: 50%;
+                    cursor: pointer;
+                    font-size: 18px;
+                    transition: all 0.2s;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+                `;
+                
+                const pageInfo = document.createElement('span');
+                pageInfo.style.cssText = `
+                    color: white;
+                    font-size: 14px;
+                    font-weight: bold;
+                    min-width: 70px;
+                    text-align: center;
+                    display: inline-block;
+                `;
+                pageInfo.textContent = `${currentPage}/${totalPages}`;
+                
+                const nextBtn = document.createElement('button');
+                nextBtn.textContent = '▶';
+                nextBtn.style.cssText = `
+                    background: white;
+                    border: none;
+                    width: 40px;
+                    height: 40px;
+                    border-radius: 50%;
+                    cursor: pointer;
+                    font-size: 18px;
+                    transition: all 0.2s;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+                `;
+                
+                btnGroup.appendChild(prevBtn);
+                btnGroup.appendChild(pageInfo);
+                btnGroup.appendChild(nextBtn);
+                document.body.appendChild(btnGroup);
+                
+                // 事件处理
+                prevBtn.onclick = () => goToPage(main, -1);
+                nextBtn.onclick = () => goToPage(main, 1);
+                
+                // 悬停效果
+                [prevBtn, nextBtn].forEach(btn => {
+                    btn.onmouseover = () => {
+                        btn.style.transform = 'scale(1.1)';
+                        btn.style.boxShadow = '0 4px 12px rgba(0,0,0,0.3)';
+                    };
+                    btn.onmouseout = () => {
+                        btn.style.transform = 'scale(1)';
+                        btn.style.boxShadow = '0 2px 8px rgba(0,0,0,0.2)';
+                    };
+                });
+                
+                // 键盘支持
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'ArrowLeft') goToPage(main, -1);
+                    if (e.key === 'ArrowRight') goToPage(main, 1);
+                });
+                
+                // 初始状态
+                updateButtonStates(prevBtn, nextBtn);
+            }
+            
+            function goToPage(main, direction) {
+                const newPage = currentPage + direction;
+                if (newPage < 1 || newPage > totalPages) return;
+                
+                currentPage = newPage;
+                const scrollTop = (currentPage - 1) * (main.clientHeight - 60);
+                
+                main.scrollTo({
+                    top: scrollTop,
+                    behavior: 'smooth'
+                });
+                
+                // 更新显示
+                const pageInfo = document.querySelector('.paginator-controls span');
+                if (pageInfo) pageInfo.textContent = `${currentPage}/${totalPages}`;
+                
+                updateButtonStates(...document.querySelectorAll('.paginator-controls button'));
+            }
+            
+            function updateButtonStates(prevBtn, nextBtn) {
+                if (prevBtn) {
+                    const disabled = currentPage === 1;
+                    prevBtn.style.opacity = disabled ? '0.4' : '1';
+                    prevBtn.style.cursor = disabled ? 'not-allowed' : 'pointer';
+                }
+                if (nextBtn) {
+                    const disabled = currentPage === totalPages;
+                    nextBtn.style.opacity = disabled ? '0.4' : '1';
+                    nextBtn.style.cursor = disabled ? 'not-allowed' : 'pointer';
+                }
+            }
+            
+            // 启动
+            init();
+        })();
+    </script>
+</body>
+</html>
