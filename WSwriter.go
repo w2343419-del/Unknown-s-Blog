@@ -410,13 +410,15 @@ func handleCommand(cmd string) (map[string]interface{}, error) {
 		
 		// 启动预览服务器
 		go func() {
-			cmd := exec.Command("hugo", "server", "--disableFastRender", "--bind", "127.0.0.1", "--navigateToChanged")
+			cmd := exec.Command("hugo", "server", "--bind", "127.0.0.1", "--navigateToChanged")
 			cmd.Dir = hugoPath
 			cmd.Run()
 		}()
 		time.Sleep(2 * time.Second) // 等待服务器启动
+		
+		// 提示用户检查终端输出的实际端口
 		return map[string]interface{}{
-			"message": "Server launched",
+			"message": "Server launched! Please check terminal for the actual port (usually 1313 or auto-assigned)",
 			"url":     "http://localhost:1313/WangScape/",
 		}, nil
 
