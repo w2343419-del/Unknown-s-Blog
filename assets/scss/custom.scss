@@ -57,6 +57,8 @@ body {
     box-sizing: border-box;
     overflow: visible;
     align-items: flex-start;
+    /* 隔离子元素的布局计算 */
+    contain: layout !important;
 }
 
 /* ===== 主内容区域（唯一可滚动区域）===== */
@@ -106,6 +108,8 @@ body {
     position: relative !important;
     padding-bottom: 0px !important;
     scrollbar-width: none !important;
+    /* 完全隔离布局计算，防止初始化时的重排 */
+    contain: layout style paint !important;
 }
 
 .sidebar.left::-webkit-scrollbar {
@@ -319,8 +323,16 @@ body {
     padding: 8px 12px !important;
     margin: 0 !important;
     position: relative !important;
-    transition: all var(--anim-normal) var(--ease-smooth) !important;
     font-size: 14px !important;
+    transition: all var(--anim-normal) var(--ease-smooth) !important;
+}
+
+/* 只在加载完成后应用过渡 */
+[data-scheme="light"] #dark-mode-toggle,
+[data-scheme="light"] #lang-switch,
+[data-scheme="dark"] #dark-mode-toggle,
+[data-scheme="dark"] #lang-switch {
+    transition: all var(--anim-normal) var(--ease-smooth) !important;
 }
 
 [data-scheme="dark"] #dark-mode-toggle,
@@ -346,11 +358,13 @@ body {
 #lang-switch:hover {
     color: var(--accent-color);
     transform: translateX(6px);
+    transition: all var(--anim-normal) var(--ease-smooth) !important;
 }
 
 #dark-mode-toggle:hover::before,
 #lang-switch:hover::before {
     transform: translateY(-50%) scaleY(1);
+    transition: transform var(--anim-normal) var(--ease-smooth) !important;
 }
 
 #dark-mode-toggle svg,
@@ -363,6 +377,7 @@ body {
 
 #dark-mode-toggle:hover svg {
     transform: rotate(180deg);
+    transition: transform var(--anim-normal) var(--ease-smooth) !important;
 }
 
 /* ===== 头像弹出层 ===== */
