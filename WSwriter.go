@@ -970,8 +970,10 @@ var htmlTemplate = `<!DOCTYPE html>
                 return;
             }
             list.innerHTML = postsData.map(p => {
+                // 转义路径中的反斜杠用于 JavaScript
+                const escapedPath = p.path.replace(/\\/g, '\\\\');
                 return '<div class="dash-post-item">' +
-                    '<div onclick="openEditor(\'' + p.path + '\', \'' + p.title + '\', \'' + p.date + '\')" style="flex:1; cursor:pointer; display:flex; flex-direction:column; gap:4px;">' +
+                    '<div onclick="openEditor(\'' + escapedPath + '\', \'' + p.title.replace(/'/g, "\\'") + '\', \'' + p.date + '\')" style="flex:1; cursor:pointer; display:flex; flex-direction:column; gap:4px;">' +
                     '<div style="display:flex; align-items:center; gap:10px;">' +
                     '<div class="dpi-title">' + p.title + '</div>' +
                     '<span style="font-size:10px; padding:2px 6px; border-radius:4px; background:' + p.status_color + '20; color:' + p.status_color + ';">' +
@@ -981,8 +983,8 @@ var htmlTemplate = `<!DOCTYPE html>
                     '<div class="dpi-meta">' + p.date + ' · ' + p.lang.toUpperCase() + ' · ' + p.path + '</div>' +
                     '</div>' +
                     '<div style="display:flex; gap:15px; align-items:center;">' +
-                    '<button onclick="deleteDocument(\'' + p.path + '\')" style="background:rgba(255,50,50,0.1); border:1px solid rgba(255,50,50,0.2); color:#ff5555; width:32px; height:32px; border-radius:8px; cursor:pointer;">🗑</button>' +
-                    '<button onclick="openEditor(\'' + p.path + '\', \'' + p.title + '\', \'' + p.date + '\')" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#fff; width:32px; height:32px; border-radius:8px; cursor:pointer;">✎</button>' +
+                    '<button onclick="deleteDocument(\'' + escapedPath + '\')" style="background:rgba(255,50,50,0.1); border:1px solid rgba(255,50,50,0.2); color:#ff5555; width:32px; height:32px; border-radius:8px; cursor:pointer;">🗑</button>' +
+                    '<button onclick="openEditor(\'' + escapedPath + '\', \'' + p.title.replace(/'/g, "\\'") + '\', \'' + p.date + '\')" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#fff; width:32px; height:32px; border-radius:8px; cursor:pointer;">✎</button>' +
                     '</div>' +
                     '</div>';
             }).join('');
