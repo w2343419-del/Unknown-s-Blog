@@ -401,43 +401,66 @@ func updateFrontmatter(relPath, title, categories string) error {
 func handleCommand(cmd string) (map[string]interface{}, error) {
 	switch cmd {
 	case "preview":
+		// 先杀死可能占用端口的 hugo 进程
+		if runtime.GOOS == "windows" {
+			exec.Command("taskkill", "/F", "/IM", "hugo.exe").Run()
+		} else {
+			exec.Command("pkill", "hugo").Run()
+		}
+		
+		time.Sleep(500 * time.Millisecond)
+		
 		// 先构建一次，确保所有内容都是最新的
-		buildCmd := exec.Command("hugo")
+		buildCmd := exec.Command("hugo", "--minify")
 		buildCmd.Dir = hugoPath
 		if err := buildCmd.Run(); err != nil {
 			return map[string]interface{}{"message": fmt.Sprintf("Build failed: %v", err)}, err
 		}
 		
 		// 启动预览服务器
-		go func() {
-			cmd := exec.Command("hugo", "server", "--bind", "127.0.0.1", "--navigateToChanged")
-			cmd.Dir = hugoPath
-			cmd.Run()
-		}()
-		time.Sleep(2 * time.Second) // 等待服务器启动
+		serverCmd := exec.Command("hugo", "server", "--bind", "127.0.0.1", "--navigateToChanged", "--disableFastRender")
+		serverCmd.Dir = hugoPath
 		
-		// 提示用户检查终端输出的实际端口
+		go func() {
+			serverCmd.Run()
+		}()
+		
+		time.Sleep(2 * time.Second)
+		
 		return map[string]interface{}{
-			"message": "Server launched! Please check terminal for the actual port (usually 1313 or auto-assigned)",
+			"message": "Preview server started! Opening browser...",
 			"url":     "http://localhost:1313/WangScape/",
 		}, nil
 
 	case "deploy":
+		// 1. 先编译网站
+		buildCmd := exec.Command("hugo", "--minify")
+		buildCmd.Dir = hugoPath
+		if err := buildCmd.Run(); err != nil {
+			return map[string]interface{}{"message": fmt.Sprintf("Build failed: %v", err)}, err
+		}
+		
+		// 2. Git 添加所有更改
 		cmd := exec.Command("git", "add", ".")
 		cmd.Dir = hugoPath
-		cmd.Run()
+		if err := cmd.Run(); err != nil {
+			return map[string]interface{}{"message": fmt.Sprintf("Git add failed: %v", err)}, err
+		}
 
-		cmd = exec.Command("git", "commit", "-m", "Web Update")
+		// 3. 提交更改
+		timestamp := time.Now().Format("2006-01-02 15:04:05")
+		cmd = exec.Command("git", "commit", "-m", fmt.Sprintf("Web Update: %s", timestamp))
 		cmd.Dir = hugoPath
-		cmd.Run()
+		cmd.Run() // 忽略错误（可能没有变更）
 
+		// 4. 推送到远程
 		cmd = exec.Command("git", "push")
 		cmd.Dir = hugoPath
 		if err := cmd.Run(); err != nil {
-			return map[string]interface{}{"message": fmt.Sprintf("Deploy failed: %v", err)}, err
+			return map[string]interface{}{"message": fmt.Sprintf("Git push failed: %v. 已构建但未推送。", err)}, err
 		}
 
-		return map[string]interface{}{"message": "Deployed successfully"}, nil
+		return map[string]interface{}{"message": "✅ 构建完成并成功推送到 GitHub！"}, nil
 
 	default:
 		return map[string]interface{}{"message": "Unknown command"}, nil
@@ -1026,7 +1049,8 @@ var htmlTemplate = `<!DOCTYPE html>
             if(!currentDocPath) return;
             const content = document.getElementById('editor-textarea').value;
             const statusEl = document.getElementById('save-status');
-            statusEl.textContent = "保存中...";
+            statusEl.textContent = "💾 保存中...";
+            statusEl.style.color = "#ffa500";
 
             try {
                 const res = await fetch('/api/save_content', {
@@ -1035,14 +1059,19 @@ var htmlTemplate = `<!DOCTYPE html>
                 });
                 const data = await res.json();
                 if(data.success) {
-                    statusEl.textContent = "已保存 " + new Date().toLocaleTimeString();
+                    statusEl.textContent = "✅ 已保存 " + new Date().toLocaleTimeString();
+                    statusEl.style.color = "#00ff88";
                     setTimeout(() => statusEl.textContent = "", 3000);
                     fetchPosts();
                 } else {
+                    statusEl.textContent = "❌ 保存失败";
+                    statusEl.style.color = "#ff5555";
                     alert("保存失败: " + data.message);
                 }
             } catch(e) {
-                alert("错误: " + e);
+                statusEl.textContent = "❌ 网络错误";
+                statusEl.style.color = "#ff5555";
+                alert("网络错误: " + e);
             }
         }
 
@@ -1055,12 +1084,13 @@ var htmlTemplate = `<!DOCTYPE html>
                 });
                 const data = await res.json();
                 if(data.success) {
+                    alert('✅ 文章已删除');
                     fetchPosts();
                 } else {
                     alert("删除失败: " + data.message);
                 }
             } catch(e) {
-                alert("错误: " + e);
+                alert("网络错误: " + e);
             }
         }
 
@@ -1073,25 +1103,27 @@ var htmlTemplate = `<!DOCTYPE html>
         }
 
         async function createPost() {
-            const title = document.getElementById('postTitle').value;
-            const cat = document.getElementById('postCat').value;
-            if(!title) return alert('需要输入标题');
+            const title = document.getElementById('postTitle').value.trim();
+            const cat = document.getElementById('postCat').value.trim();
+            if(!title) return alert('⚠️ 请输入文章标题');
 
             try {
                 const res = await fetch('/api/create_sync', {
                     method: 'POST',
-                    body: JSON.stringify({ title, categories: cat })
+                    body: JSON.stringify({ title, categories: cat || 'Uncategorized' })
                 });
                 const data = await res.json();
                 if(data.success) {
                     closeCreateModal();
+                    document.getElementById('postTitle').value = '';
+                    document.getElementById('postCat').value = '';
                     await fetchPosts();
-                    alert('创建成功！');
+                    alert('✅ 双语文章创建成功！\n中文版: ' + (data.data?.zh_path || '已创建') + '\n英文版: ' + (data.data?.en_path || '已创建'));
                 } else {
-                    alert('错误: ' + data.message);
+                    alert('❌ 创建失败: ' + data.message);
                 }
             } catch(e) {
-                alert('错误: ' + e);
+                alert('❌ 网络错误: ' + e);
             }
         }
 
@@ -1106,7 +1138,8 @@ var htmlTemplate = `<!DOCTYPE html>
             const end = textarea.selectionEnd;
             const selectedText = textarea.value.substring(start, end);
             
-            const codeBlock = '\x60\x60\x60' + language + '\\n' + (selectedText || '// 在这里输入代码\\n') + '\\n\x60\x60\x60\\n';
+            const tick = String.fromCharCode(96);
+            const codeBlock = tick + tick + tick + language + '\\n' + (selectedText || '// 在这里输入代码\\n') + '\\n' + tick + tick + tick + '\\n\\n';
             
             textarea.value = textarea.value.substring(0, start) + codeBlock + textarea.value.substring(end);
             
@@ -1119,23 +1152,23 @@ var htmlTemplate = `<!DOCTYPE html>
             const textarea = document.getElementById('editor-textarea');
             if(!textarea) return;
 
-            const imageUrl = prompt('请输入图片 URL 或路径\\n(例如: /img/photo.jpg 或 https://example.com/image.png):', '');
+            const imageUrl = prompt('请输入图片 URL 或路径\n(例如: /img/photo.jpg 或 https://example.com/image.png):', '');
             if(!imageUrl) return;
 
             const altText = prompt('请输入图片描述 (可选):', '图片');
             const width = prompt('图片宽度 (如: 500px, 80%, 留空为原始大小):', '');
-            const align = prompt('对齐方式\\n输入: left (左对齐), center (居中), right (右对齐)\\n留空为默认', 'center');
+            const align = prompt('对齐方式\n输入: left (左对齐), center (居中), right (右对齐)\n留空为默认', 'center');
             
             const start = textarea.selectionStart;
             const end = textarea.selectionEnd;
             
-            let imageHtml = '<div style="text-align: ' + (align || 'center') + ';">\\n';
+            let imageHtml = '<div style="text-align: ' + (align || 'center') + ';">\n';
             imageHtml += '  <img src="' + imageUrl + '" alt="' + (altText || '图片') + '"';
             if(width) {
                 imageHtml += ' style="width: ' + width + '; height: auto;"';
             }
-            imageHtml += '>\\n';
-            imageHtml += '</div>\\n\\n';
+            imageHtml += '>\n';
+            imageHtml += '</div>\n\n';
             
             textarea.value = textarea.value.substring(0, start) + imageHtml + textarea.value.substring(end);
             
