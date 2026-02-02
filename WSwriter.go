@@ -443,8 +443,8 @@ func handleCommand(cmd string) (map[string]interface{}, error) {
 		}, nil
 
 	case "deploy":
-		// 1. 先编译网站
-		buildCmd := exec.Command("hugo", "--minify")
+		// 1. 先编译网站 - 包含草稿和未来日期的文章
+		buildCmd := exec.Command("hugo", "--minify", "--buildDrafts", "--buildFuture")
 		buildCmd.Dir = hugoPath
 		buildOutput, err := buildCmd.CombinedOutput()
 		if err != nil {
