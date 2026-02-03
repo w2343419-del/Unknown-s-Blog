@@ -5,15 +5,8 @@ favicon = "favicon.png"
 
 [params]
     # 评论/点赞等接口的后端地址
-    # 
-    # 开发环境（本地测试）：
-    # apiBase = "http://localhost:8080"
-    # 
-    # 生产环境（Vercel部署后）：
-    # apiBase = "https://your-project.vercel.app"
-    # 
-    # 如果网站和API在同一域名，留空即可：
-    apiBase = ""
+    # Vercel API服务地址
+    apiBase = "https://unknown.vercel.app"
     
     # GitHub 评论（Issues）仓库，格式：owner/repo
     githubCommentsRepo = "w2343419-del/WangScape"
