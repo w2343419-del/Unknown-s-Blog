@@ -2,6 +2,7 @@
 title: "友情链接"
 slug: "links"
 layout: "links"
+comments: false
 links:
   - title: Google
     description: 常用的搜索引擎

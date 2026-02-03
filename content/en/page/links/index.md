@@ -2,6 +2,7 @@
 title: "Links"
 slug: "links"
 layout: "links"
+comments: false
 links:
   - title: Google
     description: Popular search engine
