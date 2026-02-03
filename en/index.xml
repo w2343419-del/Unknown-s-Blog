@@ -54,7 +54,10 @@
 &lt;p&gt;Added commenting function;&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
-&lt;p&gt;Fixed an issue where WSwriter added tags with double quotation marks.&lt;/p&gt;
+&lt;p&gt;Fixed the error of double quotes when adding tags to WSwriter;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;The security of the website has been maintained.&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
 </description>
