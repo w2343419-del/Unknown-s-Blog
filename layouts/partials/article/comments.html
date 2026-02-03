@@ -391,7 +391,7 @@
         fillAll: isZhCN ? '⚠️ 请填写所有字段' : '⚠️ Please fill in all fields',
         submitting: isZhCN ? '⏳ 提交中...' : '⏳ Submitting...',
         uploadingImages: isZhCN ? '⏳ 正在上传图片...' : '⏳ Uploading images...',
-        submitSuccess: isZhCN ? '✅ 评论提交成功！' : '✅ Comment submitted!',
+        submitSuccess: isZhCN ? '✅ 评论提交成功！等待审核后将显示在页面上。' : '✅ Comment submitted! It will appear after approval.',
         submitFailed: isZhCN ? '提交失败' : 'Submission failed',
         networkError: isZhCN ? '❌ 网络错误:' : '❌ Network error:',
         approved: isZhCN ? '✓ 已批准' : '✓ Approved',
@@ -567,74 +567,39 @@
         statusEl.style.color = '#ff9800';
 
         try {
-            if (useGithubComments()) {
-                const issueTitle = '[Comment] ' + (document.title || currentPostPath);
-                const body = [
-                    'Post: ' + currentPostPath,
-                    'Author: ' + name,
-                    'Email: ' + email,
-                    'Content:',
-                    content
-                ].join('\n');
-
-                const labels = encodeURIComponent(githubLabelComment + ',' + githubLabelPending);
-                const url = 'https://github.com/' + githubRepo + '/issues/new?title=' + encodeURIComponent(issueTitle) + '&body=' + encodeURIComponent(body) + '&labels=' + labels;
-
-                statusEl.textContent = i18n.submitting;
-                statusEl.style.color = '#ff9800';
-                window.open(url, '_blank');
-                statusEl.textContent = i18n.submitSuccess + '（已跳转到 GitHub 提交）';
-                statusEl.style.color = '#4CAF50';
-                submitBtn.disabled = false;
-                return;
-            }
-
-            // 上传图片
-            let imageUrls = [];
-            if (imageInput.files.length > 0) {
-                statusEl.textContent = i18n.uploadingImages || '正在上传图片...';
-                for (let i = 0; i < imageInput.files.length; i++) {
-                    const formData = new FormData();
-                    formData.append('image', imageInput.files[i]);
-                    
-                    const uploadRes = await fetch(buildApiUrl('/api/upload_comment_image'), {
-                        method: 'POST',
-                        body: formData
-                    });
-                    
-                    const uploadData = await uploadRes.json();
-                    if (uploadData.success && uploadData.data && uploadData.data.url) {
-                        imageUrls.push(uploadData.data.url);
-                    }
-                }
-            }
+            // 准备评论数据
+            const commentData = {
+                post_path: currentPostPath,
+                post_title: document.title || currentPostPath,
+                author: name,
+                email: email,
+                content: content,
+                parent_id: parentId || '',
+                use_github: useGithubComments(),
+                github_repo: githubRepo,
+                github_labels: [githubLabelComment, githubLabelPending]
+            };
             
-            statusEl.textContent = i18n.submitting;
-            const res = await fetch(buildApiUrl('/api/add_comment'), {
+            // 提交评论到后端API
+            const response = await fetch(buildApiUrl('/api/submit_comment'), {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({
-                    post_path: currentPostPath,
-                    author: name,
-                    email: email,
-                    content: content,
-                    parent_id: parentId || '',
-                    images: imageUrls
-                })
+                body: JSON.stringify(commentData)
             });
             
-            const data = await res.json();
+            const data = await response.json();
+            
             if (data.success) {
                 statusEl.textContent = i18n.submitSuccess;
                 statusEl.style.color = '#4CAF50';
                 
-                // 延迟关闭模态窗口
+                // 延迟关闭模态窗口并重新加载评论
                 setTimeout(() => {
                     closeCommentForm();
                     loadComments();
-                }, 1500);
+                }, 2000);
             } else {
                 statusEl.textContent = '❌ ' + (data.message || i18n.submitFailed);
                 statusEl.style.color = '#f44336';
