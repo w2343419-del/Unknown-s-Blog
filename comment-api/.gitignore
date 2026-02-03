@@ -1,0 +1,5 @@
+# 评论API .gitignore
+.env
+*.exe
+*.log
+comment-api
