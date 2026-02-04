@@ -11,7 +11,7 @@ image: ""
 math: false
 license: ""
 hidden: false
-comments: false
+comments: true
 draft: false
 ---
 
