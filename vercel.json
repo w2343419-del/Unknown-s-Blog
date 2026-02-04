@@ -1,9 +1,9 @@
 {
   "version": 2,
-  "functions": {
-    "api/submit_comment.go": {
-      "runtime": "@vercel/go@latest",
-      "memory": 256
+  "builds": [
+    {
+      "src": "api/*.go",
+      "use": "@vercel/go"
     }
-  }
+  ]
 }
