@@ -97,12 +97,8 @@
 
 /* 文章点赞样式 */
 .article-like-section {
-    padding: 20px;
-    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-    border-radius: 12px;
     margin-bottom: 40px;
     text-align: center;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .like-container {
@@ -697,7 +693,7 @@
         try {
             if (useGithubComments()) {
                 const labels = encodeURIComponent(githubLabelComment + ',' + githubLabelApproved);
-                const apiUrl = 'https://api.github.com/repos/' + githubRepo + '/issues?state=all&per_page=100&labels=' + labels;
+                const apiUrl = 'https://api.github.com/repos/' + githubRepo + '/issues?state=open&per_page=100&labels=' + labels;
                 const res = await fetch(apiUrl);
                 const issues = await res.json();
 

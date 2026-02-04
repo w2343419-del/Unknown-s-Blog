@@ -3549,6 +3549,7 @@ func handleLikePost(w http.ResponseWriter, r *http.Request) {
 
     var data struct {
         PostPath string `json:"post_path"`
+        Action   string `json:"action"`
     }
 
     if err := json.NewDecoder(r.Body).Decode(&data); err != nil {
@@ -3571,15 +3572,43 @@ func handleLikePost(w http.ResponseWriter, r *http.Request) {
     for i := range likesFile.Likes {
         if likesFile.Likes[i].PostPath == data.PostPath {
             // Check if IP already liked
-            for _, likedIP := range likesFile.Likes[i].LikedIPs {
+            ipIndex := -1
+            for idx, likedIP := range likesFile.Likes[i].LikedIPs {
                 if likedIP == ip {
-                    respondJSON(w, http.StatusOK, APIResponse{
-                        Success: false,
-                        Message: "Already liked",
-                        Data:    map[string]int{"likes": likesFile.Likes[i].Likes},
-                    })
+                    ipIndex = idx
+                    break
+                }
+            }
+            
+            // Handle unlike action
+            if data.Action == "unlike" && ipIndex >= 0 {
+                if likesFile.Likes[i].Likes > 0 {
+                    likesFile.Likes[i].Likes--
+                }
+                likesFile.Likes[i].LikedIPs = append(likesFile.Likes[i].LikedIPs[:ipIndex], likesFile.Likes[i].LikedIPs[ipIndex+1:]...)
+                found = true
+                
+                if err := savePostLikes(likesFile); err != nil {
+                    respondJSON(w, http.StatusInternalServerError, APIResponse{Success: false, Message: "Failed to save"})
                     return
                 }
+                
+                respondJSON(w, http.StatusOK, APIResponse{
+                    Success: true,
+                    Message: "Unliked",
+                    Data:    map[string]int{"likes": likesFile.Likes[i].Likes},
+                })
+                return
+            }
+            
+            // Handle like action
+            if ipIndex >= 0 {
+                respondJSON(w, http.StatusOK, APIResponse{
+                    Success: false,
+                    Message: "Already liked",
+                    Data:    map[string]int{"likes": likesFile.Likes[i].Likes},
+                })
+                return
             }
             
             // Add like
